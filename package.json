@@ -9,6 +9,7 @@
     "cors": "^2.8.1",
     "express": "^4.14.0",
     "mongoose": "^4.7.0",
+    "nodemon": "^1.11.0",
     "passport": "^0.3.2",
     "passport-http": "^0.3.0"
   },
@@ -23,7 +24,7 @@
     "webpack-dev-server": "^1.16.2"
   },
   "scripts": {
-    "run server": "nodemon server/index.js",
+    "serve": "nodemon server/index.js",
     "start": "node server/index.js"
   },
   "repository": {
