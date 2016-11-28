@@ -15,12 +15,17 @@ const app = express();
 
 // app.use('/api/v1/*', setCORS);
 app.options("", (req, res) => res.sendStatus(200));
-
 app.post('*', jsonParser);
 app.put('*', jsonParser);
 // app.use('/api/v1/playlists', playlistsRouter);
 // app.use('/api/v1/users', usersRouter);
 // app.use(passport.initialize());
+
+
+//testing get route
+app.get("/", (req,res) => {
+  res.json({"res": "ok"});
+});
 
 const CUSTOM_PORT = isNaN(Number(process.argv[2])) ? null : Number(process.argv[2]);
 
