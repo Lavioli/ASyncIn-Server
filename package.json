@@ -1,0 +1,38 @@
+{
+  "name": "asyncin-server",
+  "version": "1.0.0",
+  "description": "asyncin server development",
+  "main": "index.js",
+  "dependencies": {
+    "bcryptjs": "^2.3.0",
+    "body-parser": "^1.15.2",
+    "cors": "^2.8.1",
+    "express": "^4.14.0",
+    "mongoose": "^4.7.0",
+    "passport": "^0.3.2",
+    "passport-http": "^0.3.0"
+  },
+  "devDependencies": {
+    "babel-core": "^6.18.2",
+    "babel-loader": "^6.2.8",
+    "babel-preset-es2015": "^6.18.0",
+    "babel-preset-react": "^6.16.0",
+    "babel-register": "^6.18.0",
+    "react-addons-test-utils": "^15.4.1",
+    "webpack": "^1.13.3",
+    "webpack-dev-server": "^1.16.2"
+  },
+  "scripts": {
+    "start": "nodemon server/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Lavioli/ASyncIn-Server.git"
+  },
+  "author": "Lavie Ruan, Surbhi Poswalia, Kevin Lee, Michelle Ngyuen",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Lavioli/ASyncIn-Server/issues"
+  },
+  "homepage": "https://github.com/Lavioli/ASyncIn-Server#readme"
+}
