@@ -7,8 +7,14 @@ const UserSchema = new mongoose.Schema({
     required: true
   },
   password: {
+    type: String
+  },
+  accessToken: {
     type: String,
     required: true
+  },
+  thirdPartyToken: {
+    type: String
   }
 });
 

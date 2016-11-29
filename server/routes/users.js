@@ -37,7 +37,7 @@ usersRouter
 usersRouter
   .route('/:username')
 
-  .get(passport.authenticate('basic', { session: false }), (req, res) => {
+  .get(passport.authenticate('bearer', { session: false }), (req, res) => {
     User.findOne({ username: req.params.username })
       .select('username')
       .then(user => {

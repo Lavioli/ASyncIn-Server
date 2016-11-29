@@ -1,31 +1,33 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const mongoose = require('mongoose');
+import 'babel-polyfill';
+import express from 'express';
+import bodyParser from 'body-parser';
 const jsonParser = bodyParser.json();
-// const passport = require('./config/passport');
+import mongoose from 'mongoose';
+import passport from './config/passport';
 // const setCORS = require('./config/cors');
 
 mongoose.Promise = global.Promise;
 
 // const playlistsRouter = require('./routes/playlists');
-// const usersRouter = require('./routes/users');
-
+import usersRouter from './routes/users';
+import googleRouter from './config/google-oauth';
 const app = express();
+const User = require('./models/user');
+
+
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 
 // app.use('/api/v1/*', setCORS);
-app.options("", (req, res) => res.sendStatus(200));
-// app.post('*', jsonParser);
-// app.put('*', jsonParser);
+// app.options("", (req, res) => res.sendStatus(200));
+app.post('*', jsonParser);
+app.put('*', jsonParser);
+app.use('/api/v1/users', usersRouter);
+app.use('/auth/google', googleRouter);
 // app.use('/api/v1/playlists', playlistsRouter);
-// app.use('/api/v1/users', usersRouter);
 // app.use(passport.initialize());
-
-
-//testing get route
-app.get("/", (req,res) => {
-  res.json({"res": "ok"});
-});
 
 const CUSTOM_PORT = isNaN(Number(process.argv[2])) ? null : Number(process.argv[2]);
 
@@ -43,7 +45,9 @@ const runServer = function (callback) {
 };
 
 if (require.main === module) {
-  runServer();
+  runServer(function () {
+    console.log("server started");
+  });
 }
 
 exports.app = app;

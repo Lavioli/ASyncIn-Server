@@ -1,2 +1,3 @@
 node_modules/
 mongo_data
+server/config/client_secret.js
