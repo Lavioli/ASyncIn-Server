@@ -1,31 +1,22 @@
-require('babel-polyfill');
+import 'babel-polyfill';
 import express from 'express';
 import bodyParser from 'body-parser';
 const jsonParser = bodyParser.json();
 import mongoose from 'mongoose';
-import passport from './config/passport';
-// const setCORS = require('./config/cors');
 
 mongoose.Promise = global.Promise;
 
-// const playlistsRouter = require('./routes/playlists');
-import usersRouter from './routes/users';
-import googleRouter from './config/google-oauth';
+import youtubeRoute from './routes/youtubeRoute';
+
 const app = express();
-const User = require('./models/user');
 
-
-
-app.use(passport.initialize());
-app.use(passport.session());
-
-
-// app.use('/api/v1/*', setCORS);
-// app.options("", (req, res) => res.sendStatus(200));
 app.post('*', jsonParser);
 app.put('*', jsonParser);
-app.use('/api/v1/users', usersRouter);
-app.use('/auth/google', googleRouter);
+
+//routes for youtube api REST calls
+app.use('/api/youtube', youtubeRoute);
+// app.use('/api/v1/users', usersRouter);
+// app.use('/auth/google', googleRouter);
 // app.use('/api/v1/playlists', playlistsRouter);
 // app.use(passport.initialize());
 
