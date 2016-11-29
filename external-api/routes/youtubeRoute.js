@@ -6,7 +6,7 @@ youtubeRouter
   .route('/')
   .get((req, res) => {
     request.get('http://localhost:8080/', (error, response, body) => {
-      res.json({});
+      res.json("hi");
     })
   });
 
