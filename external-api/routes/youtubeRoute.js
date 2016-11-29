@@ -1,10 +1,13 @@
 const express = require('express');
 const youtubeRouter = express.Router();
+import request from 'request';
 
 youtubeRouter
   .route('/')
   .get((req, res) => {
-    res.json('hello')
+    request.get('http://localhost:8080/', (error, response, body) => {
+      res.json({});
+    })
   });
 
 export default youtubeRouter;

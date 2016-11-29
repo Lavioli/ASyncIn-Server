@@ -29,8 +29,8 @@
     "webpack-dev-server": "^1.16.2"
   },
   "scripts": {
-    "serve": "nodemon --exec babel-node server/index.js",
-    "start": "babel-node server/index.js"
+    "serve": "nodemon --exec babel-node external-api/index.js",
+    "start": "babel-node external-api/index.js"
   },
   "repository": {
     "type": "git",
