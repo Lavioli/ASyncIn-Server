@@ -1,43 +1,27 @@
 const express = require('express');
 const youtubeRouter = express.Router();
+const Youtube = require('youtube-api');
 import request from 'request';
+import querystring from 'querystring';
+
+// import * youtubeAPI as from './auth';
 
 youtubeRouter
   .route('/')
-  .get((req, res) => {
-    request.get('http://localhost:8080/', (error, response, body) => {
-      res.json("hi");
-    })
+  .post((req, res) => {
+
+    const data = querystring.stringify({
+      key: 'AIzaSyCYoFzO03m75aa0cebl6fN5Gz1xPRovnJk',
+      part: 'snippet',
+      type: 'video',
+      q: req.body.search
+    });
+
+    // const q = req.body.query;
+    request.get('https://www.googleapis.com/youtube/v3/search?' + data, (error, response, body) => {
+      res.json(JSON.parse(response.body));
+      }
+    )
   });
 
 export default youtubeRouter;
-
-// youtubeRouter
-//   .route('/')
-
-//   .get(passport.authenticate('basic', { session: false }), (req, res) => {
-//     User.find()
-//       .select('username')
-//       .then(users => res.json(users))
-//       .catch(err => res.sendStatus(500));
-//   })
-
-//   .post((req, res) => {
-//     const validatorResponse = validateUser(req.body);
-//     if (validatorResponse.error) return res.status(validatorResponse.status).json(validatorResponse.body);
-
-//     User.createUser(req.body.username, req.body.password)
-//       .then(user => {
-//         res.set('Location', `/api/v1/users/${user.username}`);
-//         return res.status(201).json({});
-//       })
-//       .catch(err => {
-//         console.error(err);
-//         if (err.status === 400) return res.status(400).json({ message: err.message });
-
-//         return res.sendStatus(500);
-//       });
-//   });
-
-
-// module.exports = usersRouter;

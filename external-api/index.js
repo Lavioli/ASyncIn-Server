@@ -12,6 +12,7 @@ const app = express();
 
 app.post('*', jsonParser);
 app.put('*', jsonParser);
+app.use(bodyParser.json())
 
 //routes for youtube api REST calls
 app.use('/api/youtube', youtubeRoute);
