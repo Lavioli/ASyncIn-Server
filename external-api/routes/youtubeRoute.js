@@ -1,10 +1,10 @@
 import express from 'express';
-const youtubeRouter = express.Router();
+const youtubeRoute = express.Router();
 import request from 'request';
 import querystring from 'querystring';
 import secret from './client_secret';
 
-youtubeRouter
+youtubeRoute
   .route('/')
   .post((req, res) => {
 
@@ -12,13 +12,14 @@ youtubeRouter
       key: secret.youtube.api_key,
       part: 'snippet',
       type: 'video',
-      q: req.body.search
+      q: req.body.search,
+      maxResults: 50
     });
 
     request.get('https://www.googleapis.com/youtube/v3/search?' + data, (error, response, body) => {
-      res.json(JSON.parse(response.body));
+      res.json(JSON.parse(response.body).items);
       }
     )
   });
 
-export default youtubeRouter;
+export default youtubeRoute;

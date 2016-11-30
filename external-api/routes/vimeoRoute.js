@@ -1,8 +1,8 @@
 import express from 'express';
-const vimeoRouter = express.Router();
+const vimeoRoute = express.Router();
 import request from 'request';
 import querystring from 'querystring';
-// import {Vimeo} from 'vimeo';
+import {Vimeo} from 'vimeo';
 import secret from './client_secret';
 
 const client_id = secret.vimeo.client_id;
@@ -10,24 +10,8 @@ const client_secret = secret.vimeo.client_secrets;
 const access_token = secret.vimeo.access_token;
 
 
-vimeoRouter
+vimeoRoute
 	.route('/')
-
-//generate unauthenticated access token to access public data
-// const lib = new Vimeo(CLIENT_ID, CLIENT_SECRET);
-//get access_token, only need to be used once and store access token in client secret and can be used forever
-
-  /*
-	.get((req, res) => {
-    lib.generateClientCredentials('/', (err, access_token) => {
-    	if (err) {
-    		throw err;
-    	}
-    	const token = access_token.access_token;
-    	const scope = access_token.scope;
-    });
-	})
-  */
 	.post((req, res) => {
 		const data = querystring.stringify({
 			access_token: access_token,
@@ -39,4 +23,23 @@ vimeoRouter
 		);
   	});
 
-export default vimeoRouter;
+
+//generates unauthenticated access token to access public data, access token can be used forever
+vimeoRoute
+	.route('/access')
+	.get((req, res) => {
+	    lib.generateClientCredentials('/', (err, access_token) => {
+	    	if (err) {
+	    		throw err;
+	    	}
+	    	const token = access_token.access_token;
+	    	const scope = access_token.scope;
+
+	    	res.json(token);
+	    });
+	});
+const lib = new Vimeo(client_id, client_secret);
+//optional access token for REST
+	// const lib = new Vimeo(client_id, client_secret, access_token); 
+
+export default vimeoRoute;
