@@ -1,4 +1,4 @@
-const express = require('express');
+import express from 'express';
 const youtubeRouter = express.Router();
 import request from 'request';
 import querystring from 'querystring';

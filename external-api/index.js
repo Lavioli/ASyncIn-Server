@@ -7,6 +7,7 @@ import mongoose from 'mongoose';
 mongoose.Promise = global.Promise;
 
 import youtubeRoute from './routes/youtubeRoute';
+import vimeoRoute from './routes/vimeoRoute';
 
 const app = express();
 
@@ -16,6 +17,7 @@ app.use(bodyParser.json())
 
 //routes for youtube api REST calls
 app.use('/api/youtube', youtubeRoute);
+app.use('/api/vimeo', vimeoRoute);
 // app.use('/api/v1/users', usersRouter);
 // app.use('/auth/google', googleRouter);
 // app.use('/api/v1/playlists', playlistsRouter);
