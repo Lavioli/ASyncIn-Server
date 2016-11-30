@@ -42,9 +42,11 @@ passport.use(new GoogleStrategy({
             }
             if (user) {
                 user.accessToken = accessToken;
+                
                 user.save(function(err){
                     return done(err, user);
                 })
+                //console.log('user',user);
             }
             else {
                 const newUser = new User({
@@ -52,6 +54,7 @@ passport.use(new GoogleStrategy({
                     accessToken: accessToken,
                     token: profile.id
                 });
+                
                 newUser.save(function(err, res) {
                     if (err) return done(err, res);
                     return done(null, newUser);
