@@ -1,3 +1,4 @@
 node_modules/
 mongo_data
 server/config/client_secret.js
+external-api/routes/client_secret.js
