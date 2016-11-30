@@ -34,14 +34,13 @@ passport.use(new GoogleStrategy({
 
     function(request, accessToken, refreshToken, profile, done) {
         User.findOne({
-            thirdPartyToken: profile.id
+            token: profile.id
         }, function(err, user) {
            
             if (err) {
                 done(err);
             }
             if (user) {
-                console.log(user._id,'acctoken',accessToken);
                 user.accessToken = accessToken;
                 user.save(function(err){
                     return done(err, user);
@@ -51,7 +50,7 @@ passport.use(new GoogleStrategy({
                 const newUser = new User({
                     username: profile.emails[0].value.slice(0, profile.emails[0].value.indexOf('@')),
                     accessToken: accessToken,
-                    thirdPartyToken: profile.id
+                    token: profile.id
                 });
                 newUser.save(function(err, res) {
                     if (err) return done(err, res);
