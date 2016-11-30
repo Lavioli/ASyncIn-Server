@@ -3,37 +3,26 @@ import express from 'express';
 import passport from 'passport';
 import User from '../models/user';
 
-const GoogleStrategy = require('passport-google-oauth20').Strategy;
+const FacebookStrategy = require('passport-facebook').Strategy;
 const BearerStrategy = require('passport-http-bearer').Strategy;
-const googleRouter = express.Router();
+const facebookRouter = express.Router();
 
 var secrets;
     if (!process.env.CLIENT_ID) secrets = require('./client_secret');
 
-googleRouter.use(passport.initialize());
-googleRouter.use(passport.session());
+facebookRouter.use(passport.initialize());
+facebookRouter.use(passport.session());
 
-// used to serialize the user for the session
-passport.serializeUser(function(user, done) {
-    done(null, user.id);
-});
 
-// used to deserialize the user
-passport.deserializeUser(function(id, done) {
-    User.findById(id, function(err, user) {
-        done(err, user);
-    });
-});
-
-passport.use(new GoogleStrategy({
-        clientID: process.env.CLIENT_ID || secrets.google.client_id,
-        clientSecret: process.env.CLIENT_SECRET || secrets.google.client_secret,
-        callbackURL: process.env.CALL_BACK_URL || secrets.google.callbackURL,
-        passReqToCallback: true
-    },
-
-    function(request, accessToken, refreshToken, profile, done) {
-        User.findOne({
+passport.use(
+    new FacebookStrategy({
+        clientID: process.env.CLIENT_ID || secrets.facebook.client_id,
+        clientSecret: process.env.CLIENT_SECRET || secrets.facebook.client_secret,
+        callbackURL: process.env.CALL_BACK_URL || secrets.facebook.callbackURL
+        },
+        
+        function(accessToken, refreshToken, profile, done) {
+            User.findOne({
             token: profile.id
         }, function(err, user) {
            
@@ -48,7 +37,7 @@ passport.use(new GoogleStrategy({
             }
             else {
                 const newUser = new User({
-                    username: profile.emails[0].value.slice(0, profile.emails[0].value.indexOf('@')),
+                    username: profile.displayName,
                     accessToken: accessToken,
                     token: profile.id
                 });
@@ -59,23 +48,22 @@ passport.use(new GoogleStrategy({
             }
 
         });
+        }
+    ));
 
-    }
-));
-
-googleRouter.get('/', passport.authenticate('google', {scope: ['https://www.googleapis.com/auth/userinfo.profile','https://www.googleapis.com/auth/userinfo.email'], session: false}));
-
-googleRouter.get('/callback', passport.authenticate('google', {failureRedirect: '/login', session: false}),
-	function(req, res) {
-		//successful authentication, redirect home
-		var accessToken = req.user.accessToken;
-		var redirectLink = '/home?access_token=' + accessToken;
-		res.redirect(redirectLink);
-	}
+facebookRouter.get(
+  '/',
+    passport.authenticate('facebook', { session: false, scope: ['email'] })
 );
 
+facebookRouter.get('/callback',
+  passport.authenticate('facebook', { session: false, failureRedirect: "/login" }),
+  function(req, res) {
+    var accessToken = req.user.accessToken;
+    res.redirect("/home?access_token=" + accessToken);
+  }
+);
 
-//token auth setup
 passport.use(
     new BearerStrategy(
         function(token, done) {
@@ -99,4 +87,5 @@ passport.use(
     )
 );
 
-module.exports = googleRouter;
+
+module.exports = facebookRouter;

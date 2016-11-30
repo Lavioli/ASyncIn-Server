@@ -13,8 +13,10 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  thirdPartyToken: {
-    type: String
+  token: {
+    type: String,
+    required: true,
+    unique: true
   }
 });
 
