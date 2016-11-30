@@ -22,17 +22,14 @@ passport.use(
         },
         
         function(accessToken, refreshToken, profile, done) {
-            console.log(accessToken);
-            console.log(profile);
             User.findOne({
-            thirdPartyToken: profile.id
+            token: profile.id
         }, function(err, user) {
            
             if (err) {
                 done(err);
             }
             if (user) {
-                console.log(user._id,'acctoken',accessToken);
                 user.accessToken = accessToken;
                 user.save(function(err){
                     return done(err, user);
@@ -42,7 +39,7 @@ passport.use(
                 const newUser = new User({
                     username: profile.displayName,
                     accessToken: accessToken,
-                    thirdPartyToken: profile.id
+                    token: profile.id
                 });
                 newUser.save(function(err, res) {
                     if (err) return done(err, res);
@@ -56,7 +53,7 @@ passport.use(
 
 facebookRouter.get(
   '/',
-    passport.authenticate('facebook', { session: false, scope: [] })
+    passport.authenticate('facebook', { session: false, scope: ['email'] })
 );
 
 facebookRouter.get('/callback',
