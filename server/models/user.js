@@ -20,12 +20,12 @@ const UserSchema = new mongoose.Schema({
   }
 });
 
-UserSchema.statics.createUser = function(username, password, id) {
-  const newUser = { username };
+UserSchema.statics.createUser = function(username, password, token, accessToken, id) {
+  const newUser = { username:username, token:token, accessToken:accessToken};
   if (id) newUser._id = id;
 
   return new Promise((res, rej) => {
-    this.findOne({ username })
+    this.findOne({ token })
       .then(user => {
         if (user) return rej({ status: 400, message: 'User already exists'});
 
