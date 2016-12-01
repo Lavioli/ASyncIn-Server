@@ -25,6 +25,7 @@ vimeoRoute
 					{
 						link: element.link,
 						title: element.name,
+						source: 'Vimeo'
 					}
 				);
 			});

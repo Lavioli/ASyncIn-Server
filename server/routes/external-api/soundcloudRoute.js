@@ -20,7 +20,8 @@ soundcloudRoute
 				results.push(
 					{
 						link: element.permalink_url,
-						title: element.title
+						title: element.title,
+						source: 'SoundCloud'
 					}
 				);
 			});

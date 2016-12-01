@@ -37,11 +37,13 @@ ___Response Example:___
 [
   {
     "link": "https://www.youtube.com/watch?v=e-ORhEE9VVg",
-    "title": "Taylor Swift - Blank Space"
+    "title": "Taylor Swift - Blank Space",
+    "source": "YouTube"
   },
   {
     "link": "https://www.youtube.com/watch?v=IdneKLhsWOQ",
-    "title": "Taylor Swift - Wildest Dreams"
+    "title": "Taylor Swift - Wildest Dreams",
+    "source": "YouTube"
   }
 ]
 ```
@@ -73,11 +75,13 @@ ___Response Example:___
 [
   {
     "link": "https://vimeo.com/31288701",
-    "title": "Taylor Swift \"Teardrops On My Guitar\""
+    "title": "Taylor Swift \"Teardrops On My Guitar\"",
+    "source": "Vimeo"
   },
   {
     "link": "https://vimeo.com/53812885",
-    "title": "8 Hours Taylor Swift"
+    "title": "8 Hours Taylor Swift",
+    "source": "Vimeo"
   }
 ]
 ```
@@ -109,11 +113,13 @@ ___Response Example:___
 [
   {
     "link": "https://soundcloud.com/alibrustofski/bad-blood-taylor-swift-cover-by-ali-brustofski",
-    "title": "Bad Blood - Taylor Swift - Cover By Ali Brustofski"
+    "title": "Bad Blood - Taylor Swift - Cover By Ali Brustofski",
+    "source": "SoundCloud"
   },
   {
     "link": "https://soundcloud.com/madilyn-bailey-official_1457539153257/i-knew-you-were-trouble",
-    "title": "I Knew You Were Trouble - Madilyn Bailey ( Taylor Swift )"
+    "title": "I Knew You Were Trouble - Madilyn Bailey ( Taylor Swift )",
+    "source": "SoundCloud"
   }
 ]
 ```
