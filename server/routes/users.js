@@ -11,13 +11,17 @@ usersRouter
   .route('/')
 
   .get(passport.authenticate('bearer', { session: false }), (req, res) => {
-    User.find()
-       .select('username')
-      .then(users => res.json(users))
+    User.find({},'username token accessToken _id favouritePlaylists')
+      .then(users => res.json(users)
+      )
       .catch(err => res.sendStatus(500));
   })
 
   .post((req, res) => {
+    
+    if(!req.body.username || !req.body.password || !req.body.email) {
+      return res.status(400).json({message: 'Invalid input.'});
+    }
     
     User.createUser(
       req.body.username,
@@ -27,11 +31,15 @@ usersRouter
     )
       .then(user => {
         res.set('Location', `/api/v1/users/${user.username}`);
-        return res.status(201).json(user);
+        return res.status(201).json({username: user.username, 
+                                     token: user.token, 
+                                     accessToken: user.accessToken, 
+                                     userId: user._id, 
+                                     favouritePlaylists: user.favouritePlaylists});
       })
       .catch(err => {
         console.error(err);
-        if (err.status === 400) return res.status(400).json({ message: err.message });
+        if (err.status === 400) return res.status(400).json({message: err.message});
         return res.sendStatus(500);
       });
   })
@@ -40,20 +48,26 @@ usersRouter
   //If the user wants to change username,currentUsername and newUsername will be sent to us in JSON format and accessToken via query
   //If the user wants to change the password, current and new password will be sent to us in JSON format and accessToken via query
   //If the user wants to change the playlist send the updated playlist in JSON format and accessToken via query.
-  .put(passport.authenticate('bearer', { session: false }), (req, res) => {
+  .put(passport.authenticate('bearer', {session: false}), (req, res) => {
     
     if(req.body.currentUsername && req.body.newUsername){
       if(req.body.currentUsername === req.body.newUsername) {
-        return res.json({Message: "New username is same as the current username"});
+        return res.json({message: 'New username is same as the current username.'});
       }
     }
     
     if(req.body.newUsername) {
-      User.findOneAndUpdate({accessToken: req.query.access_token }, { username: req.body.newUsername } , { new: true })
+      User.findOneAndUpdate({accessToken: req.query.access_token },
+      { username: req.body.newUsername }, 
+      { new: true })
        .then(user => {
-            if (!user) return res.status(404).json({ message: 'User not found' });
-            return res.json(user);
-       })
+            if (!user) return res.status(404).json({message: 'User not found.'});
+            return res.json({username: user.username, 
+                             token: user.token, 
+                             accessToken: user.accessToken, 
+                             userId: user._id, 
+                             favouritePlaylists: user.favouritePlaylists});
+                           })
           .catch(() => res.sendStatus(500));
     }
     
@@ -62,10 +76,12 @@ usersRouter
         bcrypt.genSalt(10, (err, salt) => {
                       bcrypt.hash(req.body.newPassword, salt, (err, hashNewPassword) => {
                         console.log('hashNewPassword',hashNewPassword);
-                      User.findOneAndUpdate({ accessToken: req.query.access_token }, {password: hashNewPassword }, { new: true })
+                      User.findOneAndUpdate({accessToken: req.query.access_token}, 
+                                            {password: hashNewPassword }, 
+                                            {new: true})
                       .then(user => {
-                        if (!user) return res.status(404).json({ message: 'User not found' });
-                          return res.json({});
+                        if (!user) return res.status(404).json({ message: 'User not found.' });
+                          return res.json({message: 'Your password has been changed successfully.'});
                       })
                     .catch(() => res.sendStatus(500));
             });
@@ -73,15 +89,7 @@ usersRouter
       });
     }
     
-    if(req.body.newPlaylists) {
-      User.findOneAndUpdate({ accessToken: req.query.access_token }, { playlists: req.body.newPlaylists }, { new:true })
-        .then(user => {
-          if (!user) return res.status(404).json({ message: 'User not found' });
-            return res.json(user);
-        });
-    }
-    
-   if(!req.body.newUsername && !req.body.newPassword && !req.body.newPlaylists) {
+   if(!req.body.newUsername && !req.body.newPassword) {
       return res.status(404).json({ message: 'Invalid input' });
    }
   });
@@ -95,14 +103,18 @@ usersRouter
       .then(user => {
         if (!user) return res.status(404).json({ message: 'User not found' });
         if (req.query.access_token === user.accessToken){
-            return res.json({username: user.username, accessToken: user.accessToken, playlists: user.playlists});
+            return res.json({username: user.username, 
+                             token: user.token, 
+                             accessToken: user.accessToken, 
+                             userId: user._id, 
+                             favouritePlaylists: user.favouritePlaylists});
         } else {
-            return res.json({username: user.username, playlists: user.playlists});  
+            return res.json({username: user.username,
+                             userId: user._id});
         }
       })
-  
       .catch(err => res.sendStatus(500));
-  }) 
+  });
   
 
 passport.use(
@@ -115,15 +127,15 @@ passport.use(
                 function(err, user) {
                     console.log(user);
                     if (err) {
-                        return done(err)
+                        return done(err);
                     }
                     if (!user) {
-                        return done(null, false)
+                        return done(null, false);
                     }
 
                     return done(null, user, {
                         scope: 'all'
-                    })
+                    });
                 }
             );
         }
