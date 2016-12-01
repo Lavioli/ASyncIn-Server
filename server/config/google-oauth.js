@@ -7,8 +7,6 @@ const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const BearerStrategy = require('passport-http-bearer').Strategy;
 const googleRouter = express.Router();
 
-var secrets;
-    if (!process.env.CLIENT_ID) secrets = require('./client_secret');
 
 googleRouter.use(passport.initialize());
 googleRouter.use(passport.session());
@@ -26,9 +24,9 @@ passport.deserializeUser(function(id, done) {
 });
 
 passport.use(new GoogleStrategy({
-        clientID: process.env.CLIENT_ID || secrets.google.client_id,
-        clientSecret: process.env.CLIENT_SECRET || secrets.google.client_secret,
-        callbackURL: process.env.CALL_BACK_URL || secrets.google.callbackURL,
+        clientID: process.env.GOOGLE_CLIENT_ID,
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+        callbackURL: process.env.GOOGLE_CLIENT_CALLBACK_URL,
         passReqToCallback: true
     },
 
