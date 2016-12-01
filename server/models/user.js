@@ -2,6 +2,9 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
 const UserSchema = new mongoose.Schema({
+  //For frontend's local login registration, username is display name.
+  //For Google, email address before @gmail.com is displayname.
+  //For Facebook, display name is username.
   username: {
     type: String,
     required: true
@@ -13,11 +16,14 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  //For local login, email will be considered token.
+  //For Facebook and Google logins, profile.id will considered token.
   token: {
     type: String,
     required: true,
     unique: true
-  }
+  }, 
+  playlists:[]
 });
 
 UserSchema.statics.createUser = function(username, password, token, accessToken, id) {
@@ -51,9 +57,9 @@ UserSchema.statics.createUser = function(username, password, token, accessToken,
   });
 };
 
-UserSchema.statics.findOneAndValidate = function(username, password) {
+UserSchema.statics.findOneAndValidate = function(token, password) {
   return new Promise((res, rej) => {
-    this.findOne({ username })
+    this.findOne({ token })
       .then(user => {
         if (!user) return res(null);
 
