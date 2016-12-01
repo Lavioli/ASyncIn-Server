@@ -24,7 +24,8 @@ youtubeRoute
         newResultsArr.push(
           {
             link: 'https://www.youtube.com/watch?v=' + element.id.videoId,
-            title: element.snippet.title
+            title: element.snippet.title,
+            source: 'YouTube'
           }
         )
       })
