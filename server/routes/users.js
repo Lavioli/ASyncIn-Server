@@ -1,14 +1,11 @@
-const express = require('express');
-const usersRouter = express.Router();
-const passport = require('../config/passport');
-const bcrypt = require('bcrypt');
-const BearerStrategy = require('passport-http-bearer').Strategy;
+import express from 'express';
+import passport from '../config/passport';
+import bcrypt from 'bcrypt';
+import {Strategy as BearerStrategy} from 'passport-http-bearer';
 import tokenGenerator from '../config/tokenGenerator';
-
-const validateUser = require('./validators').validateUser;
-
-const User = require('../models/user');
-
+import validateUser from './validators';
+import User from '../models/user';
+const usersRouter = express.Router();
 
 usersRouter
   .route('/')

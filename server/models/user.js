@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
+import mongoose from 'mongoose';
+import bcrypt from 'bcrypt';
 
 const UserSchema = new mongoose.Schema({
   //For frontend's local login registration, username is display name.
@@ -81,4 +81,4 @@ UserSchema.statics.findOneAndValidate = function(token, password) {
 
 var User = mongoose.model('User', UserSchema);
 
-module.exports = User;
+export default User;

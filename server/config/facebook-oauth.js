@@ -3,8 +3,8 @@ import express from 'express';
 import passport from 'passport';
 import User from '../models/user';
 
-const FacebookStrategy = require('passport-facebook').Strategy;
-const BearerStrategy = require('passport-http-bearer').Strategy;
+import {Strategy as FacebookStrategy} from 'passport-facebook';
+import {Strategy as BearerStrategy} from 'passport-http-bearer';
 const facebookRouter = express.Router();
 
 
@@ -87,4 +87,4 @@ passport.use(
 );
 
 
-module.exports = facebookRouter;
+export default facebookRouter;
