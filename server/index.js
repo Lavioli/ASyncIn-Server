@@ -8,7 +8,7 @@ import passport from './config/passport';
 
 mongoose.Promise = global.Promise;
 
-// const playlistsRouter = require('./routes/playlists');
+
 import usersRouter from './routes/users';
 import googleRouter from './config/google-oauth';
 import facebookRouter from './config/facebook-oauth';
@@ -28,8 +28,8 @@ app.put('*', jsonParser);
 app.use('/api/v1/users', usersRouter);
 app.use('/auth/google', googleRouter);
 app.use('/auth/facebook', facebookRouter);
-// app.use('/api/v1/playlists', playlistsRouter);
-// app.use(passport.initialize());
+
+
 
 const CUSTOM_PORT = isNaN(Number(process.argv[2])) ? null : Number(process.argv[2]);
 

@@ -104,13 +104,11 @@ usersRouter
         } else {
             return res.json({username: user.username, playlists: user.playlists});  
         }
-          
-        })
-      
+      })
+  
       .catch(err => res.sendStatus(500));
   }) 
   
-
 
 passport.use(
     new BearerStrategy(
