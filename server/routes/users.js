@@ -18,9 +18,7 @@ usersRouter
   })
 
   .post((req, res) => {
-    const validatorResponse = validateUser(req.body);
-    if (validatorResponse.error) return res.status(validatorResponse.status).json(validatorResponse.body);
-
+    
     User.createUser(
       req.body.username,
       req.body.password, 
@@ -86,7 +84,7 @@ usersRouter
    if(!req.body.newUsername && !req.body.newPassword && !req.body.newPlaylists) {
       return res.status(404).json({ message: 'Invalid input' });
    }
-    });
+  });
 
 
 usersRouter
