@@ -37,7 +37,7 @@
   },
   "scripts": {
     "serve": "nodemon --exec node --require 'dotenv/config' --require 'babel-register' server/index.js",
-    "start": "babel-node server/index.js"
+    "start": "node --require 'babel-register' server/index.js"
   },
   "repository": {
     "type": "git",
