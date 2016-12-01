@@ -46,7 +46,7 @@ passport.use(new GoogleStrategy({
                 user.save(function(err){
                     return done(err, user);
                 })
-                //console.log('user',user);
+                console.log('user',user);
             }
             else {
                 const newUser = new User({
@@ -72,7 +72,7 @@ googleRouter.get('/callback', passport.authenticate('google', {failureRedirect: 
 	function(req, res) {
 		//successful authentication, redirect home
 		var accessToken = req.user.accessToken;
-		var redirectLink = '/home?access_token=' + accessToken;
+		var redirectLink = 'https://asyncin-client-surbi.c9users.io/home?access_token=' + accessToken;
 		res.redirect(redirectLink);
 	}
 );
