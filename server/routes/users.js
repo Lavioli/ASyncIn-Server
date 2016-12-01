@@ -2,6 +2,7 @@ const express = require('express');
 const usersRouter = express.Router();
 const passport = require('../config/passport');
 const bcrypt = require('bcrypt');
+import tokenGenerator from '../config/tokenGenerator';
 
 const validateUser = require('./validators').validateUser;
 
@@ -12,7 +13,7 @@ usersRouter
 
   .get(passport.authenticate('basic', { session: false }), (req, res) => {
     User.find()
-      .select('username')
+       .select('username')
       .then(users => res.json(users))
       .catch(err => res.sendStatus(500));
   })
@@ -21,7 +22,12 @@ usersRouter
     const validatorResponse = validateUser(req.body);
     if (validatorResponse.error) return res.status(validatorResponse.status).json(validatorResponse.body);
 
-    User.createUser(req.body.username, req.body.password)
+    User.createUser(
+      req.body.username,
+      req.body.password, 
+      req.body.email,
+      tokenGenerator(34)
+    )
       .then(user => {
         res.set('Location', `/api/v1/users/${user.username}`);
         return res.status(201).json({});
@@ -29,7 +35,6 @@ usersRouter
       .catch(err => {
         console.error(err);
         if (err.status === 400) return res.status(400).json({ message: err.message });
-
         return res.sendStatus(500);
       });
   });
@@ -59,12 +64,12 @@ usersRouter
         User.findOneAndUpdate({ username: req.user.username }, { username: req.body.username, password: hash })
           .then(user => {
             if (!user) return res.status(404).json({ message: 'User not found' });
-
             return res.json({});
           })
           .catch(() => res.sendStatus(500));
       });
     });
   })
+
 
 module.exports = usersRouter;
