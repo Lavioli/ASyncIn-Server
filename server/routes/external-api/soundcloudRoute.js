@@ -3,10 +3,6 @@ const soundcloudRoute = express.Router();
 import request from 'request';
 import querystring from 'querystring';
 
-if (process.env.NODE_ENV === 'development') {
-  require('dotenv').config();
-}
-
 let client_id = process.env.SOUNDCLOUD_CLIENT_ID;
 
 soundcloudRoute

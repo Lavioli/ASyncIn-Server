@@ -3,10 +3,6 @@ const youtubeRoute = express.Router();
 import request from 'request';
 import querystring from 'querystring';
 
-if (process.env.NODE_ENV === 'development') {
-  require('dotenv').config();
-}
-
 let api_key = process.env.YOUTUBE_API_KEY;
 
 youtubeRoute
