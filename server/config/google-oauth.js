@@ -3,8 +3,8 @@ import express from 'express';
 import passport from 'passport';
 import User from '../models/user';
 
-const GoogleStrategy = require('passport-google-oauth20').Strategy;
-const BearerStrategy = require('passport-http-bearer').Strategy;
+import {Strategy as GoogleStrategy} from 'passport-google-oauth20';
+import {Strategy as BearerStrategy} from 'passport-http-bearer';
 const googleRouter = express.Router();
 
 
@@ -100,4 +100,4 @@ passport.use(
     )
 );
 
-module.exports = googleRouter;
+export default googleRouter;

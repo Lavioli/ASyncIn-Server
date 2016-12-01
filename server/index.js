@@ -23,7 +23,7 @@ import vimeoRoute from './routes/external-api/vimeoRoute';
 import soundcloudRoute from './routes/external-api/soundcloudRoute';
 
 const app = express();
-const User = require('./models/user');
+import User from './models/user';
 
 app.use(passport.initialize());
 app.use(passport.session());
