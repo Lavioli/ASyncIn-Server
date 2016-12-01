@@ -34,7 +34,7 @@
     "webpack-dev-server": "^1.16.2"
   },
   "scripts": {
-    "serve": "nodemon --exec NODE_ENV=development babel-node server/index.js",
+    "serve": "nodemon --exec node --require 'dotenv/config' --require 'babel-register' server/index.js",
     "start": "babel-node server/index.js"
   },
   "repository": {

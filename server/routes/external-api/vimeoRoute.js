@@ -4,10 +4,6 @@ import request from 'request';
 import querystring from 'querystring';
 import {Vimeo} from 'vimeo';
 
-if (process.env.NODE_ENV === 'development') {
-  require('dotenv').config();
-}
-
 let client_id = process.env.VIMEO_CLIENT_ID;
 let client_secret = process.env.VIMEO_CLIENT_SECRET;
 let access_token = process.env.VIMEO_ACCESS_TOKEN;
