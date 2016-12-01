@@ -2,6 +2,7 @@ import express from 'express';
 const vimeoRoute = express.Router();
 import request from 'request';
 import querystring from 'querystring';
+import {Vimeo} from 'vimeo';
 
 let client_id = process.env.VIMEO_CLIENT_ID;
 let client_secret = process.env.VIMEO_CLIENT_SECRET;
