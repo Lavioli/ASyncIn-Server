@@ -16,7 +16,9 @@
     "passport-http": "^0.3.0",
     "passport-http-bearer": "^1.0.1",
     "passport-local": "^1.0.0",
-    "passport-token": "^0.2.0"
+    "passport-token": "^0.2.0",
+    "request": "^2.79.0",
+    "vimeo": "^1.2.0"
   },
   "devDependencies": {
     "babel-cli": "^6.11.4",
