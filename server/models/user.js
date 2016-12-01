@@ -23,7 +23,9 @@ const UserSchema = new mongoose.Schema({
     required: true,
     unique: true
   }, 
-  playlists:[]
+  favouritedPlaylists:{
+    type: Array
+  }
 });
 
 UserSchema.statics.createUser = function(username, password, token, accessToken, id) {
