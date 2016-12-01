@@ -27,10 +27,8 @@ youtubeRoute
       resultsArr.forEach((element) => {
         newResultsArr.push(
           {
-            videoId: element.id.videoId
-          },
-          {
-            snippet: element.snippet
+            link: 'https://www.youtube.com/watch?v=' + element.id.videoId,
+            title: element.snippet.title
           }
         )
       })
