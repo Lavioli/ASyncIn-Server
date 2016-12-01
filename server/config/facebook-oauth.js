@@ -60,7 +60,7 @@ facebookRouter.get('/callback',
   passport.authenticate('facebook', { session: false, failureRedirect: "/login" }),
   function(req, res) {
     var accessToken = req.user.accessToken;
-    res.redirect("/home?access_token=" + accessToken);
+    res.redirect("https://asyncin-client-surbi.c9users.io/home?access_token=" + accessToken);
   }
 );
 
