@@ -24,10 +24,7 @@ soundcloudRoute
 				results.push(
 					{
 						link: element.permalink_url,
-						title: element.title,
-						artwork: element.artwork,
-						purchase_url: element.purchase_url,
-						created_at: element.created_at
+						title: element.title
 					}
 				);
 			});

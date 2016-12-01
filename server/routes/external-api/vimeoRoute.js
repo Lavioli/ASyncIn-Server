@@ -28,9 +28,7 @@ vimeoRoute
 				result.push(
 					{
 						link: element.link,
-						name: element.name,
-						description: element.description,
-						pictures: element.pictures
+						title: element.name,
 					}
 				);
 			});
