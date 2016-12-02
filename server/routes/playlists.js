@@ -27,7 +27,7 @@ playlistsRouter
     (req, res) => {
       User.findOne({_id: req.params.userId})
       .then(user => {
-        if(user.accessToken === req.query.access_token) {
+        if(user.accessToken === req.query.access_token && user._id.toString() === req.body.userId.toString()) {
           const newPlaylist = new Playlist(req.body);
           newPlaylist.save(
             (err, playlist) => {
@@ -39,6 +39,8 @@ playlistsRouter
               return res.json(playlist);
             }
           );
+        } else {
+            return res.status(400).json({message:'You\'re not authorized to modify this playlist'});
         }
       });
     }
@@ -52,7 +54,7 @@ playlistsRouter
     (req, res) => {
       User.findOne({_id: req.params.userId})
       .then(user => {
-        if(user.accessToken === req.query.access_token) {
+        if(user.accessToken === req.query.access_token && user._id === req.body.userId) {
           Playlist.findOneAndUpdate(
             {
               _id: req.params.playlistId
@@ -67,30 +69,29 @@ playlistsRouter
           )
           .then(playlist => {
             return res.status(200).json(playlist);
-          })
-          .catch(() => res.status(400).json({message:'You\'re not authorized to modify this playlist'})
-          );
+          });
+        } else {
+            return res.status(400).json({message:'You\'re not authorized to modify this playlist'});
         }
-    });
-  })
+      });
+    }
+  )
+  
   .delete(passport.authenticate('bearer', {session: false}), 
     (req, res) => {
       Playlist.findOne({_id: req.params.playlistId})
       .then(playlist => {
-        
         if (!playlist) {
               return res.status(404).json({
                 message: 'Playlist not found'
             });
         }
-        
-        if(playlist.userId.toString() === req.params.userId.toString()) {
+        if (playlist.userId.toString() === req.params.userId.toString()) {
           Playlist.findByIdAndRemove(req.params.playlistId)
             .then(playlist => {
             return res.json({message: "The playlist is successfully deleted."})
           });
          }
-         
          else{
            return res.json({message: "You are not authorized to delete this playlist"})
          }
