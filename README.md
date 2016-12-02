@@ -123,7 +123,7 @@ ___Response Example:___
   }
 ]
 ```
-##``/api/v1/users/``
+##``/api/v1/users``
 Endpoint representing youtube video searches
 #####`GET /api/v1/users`
 ___URL Parameters:___
@@ -133,7 +133,7 @@ NONE
 ___Query String Parameters:___
 access_token
 ___Returns:___
-An array of objects containing the userid and usernames
+An array of objects containing the userid, username, token, favouritePlaylists 
 
 ___Send Example:___
 ```
@@ -145,46 +145,53 @@ ___Response Example:___
 ```
 [
   {
-    "_id": "58407af0afefa02b4c0c8f7a",
-    "username": "asyncinmusic"
+    "_id": "583f16ee0ab0b50b35cba743",
+    "username": "user1",
+    "token": "101778571642462694061",
+    "favouritePlaylists": []
   },
   {
-    "_id": "5840993b41b21f37ff20d179",
-    "username": "user3234511"
+    "_id": "583f16fc0ab0b50b35cba744",
+    "username": "user2",
+    "token": "101795760312702",
+    "favouritePlaylists": []
   }
 ]
 ```
 
-##``/api/v1/users/``
+##``/api/v1/users``
 Endpoint representing youtube video searches
 #####`POST /api/v1/users`
 ___URL Parameters:___
 NONE
 ___Data Parameters:___
-NONE
+username, password, email
 ___Query String Parameters:___
-access_token
+NONE
 ___Returns:___
-An object containing the username, token, userId,favouritedPlaylists and access token
+User object containing the username, token, userId,favouritedPlaylists and access token and an empty Playlist object 
 
 ___Send Example:___
 ```
-> POST /api/v1/users?access_token=gfhgfhghghghd
+> POST /api/v1/users
 {
-	"username":"user3234511",
-	"password":"password133234511",
-	"email":"user123333511@gmail.com"
+	"username":"user3",
+	"password":"password3",
+	"email":"user3@gmail.com"
 }
 ```
 ___Response Example:___
 
 ```
 {
-  "username": "user3234511",
-  "token": "user123333511@gmail.com",
-  "accessToken": "uvs8ihgcgwgcow4g88kwc8o0cgogggskcw",
-  "userId": "5840adc9628bda11f3747525",
-  "favouritedPlaylists": []
+  "user": {
+    "username": "user5",
+    "token": "user5@gmail.com",
+    "accessToken": "0uubf8b2zkkssogs48g8w804w8gks8owcg",
+    "userId": "58419d85310ef24924f679ba",
+    "favouritePlaylists": []
+  },
+  "playlist": []
 }
 ```
 
@@ -200,28 +207,74 @@ newPassword
 ___Query String Parameters:___
 access_token
 ___Returns:___
-An object containing the username and access token
+An object containing the username, token, userId,favouritedPlaylists and access token 
 
 ___Send Example:___
 ```
-> POST /api/v1/users?access_token=gfhgfhghghghd
+> PUT /api/v1/users?access_token=gfhgfhghghghd
 {
 	"newUsername":"user"
 }
 
 ```
 ```
-> POST /api/v1/users?access_token=gfhgfhghghghd
+> PUT /api/v1/users?access_token=gfhgfhghghghd
 {
 	"newPassword":"password"
 }
 
 ```
 ___Response Example:___
+On username change
+```
+{
+  "username": "user",
+  "token": "101778571642462694061",
+  "accessToken": "ya29.CjCmAx7mNnuxmmhdY71ww6F4pddN8LxYErTZbHDF3g3kg65UdgU0wiCxOCbGyCzi6dg",
+  "userId": "583f16ee0ab0b50b35cba743",
+  "favouritePlaylists": []
+}
+```
+On password change
+```
+{
+  "message": "Your password has been changed successfully."
+}
+```
+
+##``/api/v1/users``
+Endpoint representing youtube video searches
+#####`GET /api/v1/users/:token`
+___URL Parameters:___
+token
+___Data Parameters:___
+NONE
+___Query String Parameters:___
+access_token
+___Returns:___
+User object containing the username, token, userId,favouritedPlaylists and access token and  Playlist object 
+
+___Send Example:___
+```
+> GET /api/v1/users/_token_?access_token=gfhgfhghghghd
+
+```
+
+___Response Example:___
 
 ```
 {
-  "username": "surbhi1234",
-  "accessToken": "0onfjufpswkco48ggos4ookswgs0s0g0gw"
+  "user": {
+    "username": "surbhi",
+    "token": "user123511@gmail.com",
+    "accessToken": "0onfjufpswkco48ggos4ookswgs0s0g0gw",
+    "userId": "583f7f4023caf01bfabe4812",
+    "favouritePlaylists": [
+      "5446566"
+    ]
+  },
+  "playlist": []
 }
 ```
+
+
