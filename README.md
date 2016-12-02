@@ -123,3 +123,105 @@ ___Response Example:___
   }
 ]
 ```
+##``/api/v1/users/``
+Endpoint representing youtube video searches
+#####`GET /api/v1/users`
+___URL Parameters:___
+NONE
+___Data Parameters:___
+NONE
+___Query String Parameters:___
+access_token
+___Returns:___
+An array of objects containing the userid and usernames
+
+___Send Example:___
+```
+> GET /api/v1/users?access_token=gfhgfhghghghd
+
+```
+___Response Example:___
+
+```
+[
+  {
+    "_id": "58407af0afefa02b4c0c8f7a",
+    "username": "asyncinmusic"
+  },
+  {
+    "_id": "5840993b41b21f37ff20d179",
+    "username": "user3234511"
+  }
+]
+```
+
+##``/api/v1/users/``
+Endpoint representing youtube video searches
+#####`POST /api/v1/users`
+___URL Parameters:___
+NONE
+___Data Parameters:___
+NONE
+___Query String Parameters:___
+access_token
+___Returns:___
+An object containing the username, token, userId,favouritedPlaylists and access token
+
+___Send Example:___
+```
+> POST /api/v1/users?access_token=gfhgfhghghghd
+{
+	"username":"user3234511",
+	"password":"password133234511",
+	"email":"user123333511@gmail.com"
+}
+```
+___Response Example:___
+
+```
+{
+  "username": "user3234511",
+  "token": "user123333511@gmail.com",
+  "accessToken": "uvs8ihgcgwgcow4g88kwc8o0cgogggskcw",
+  "userId": "5840adc9628bda11f3747525",
+  "favouritedPlaylists": []
+}
+```
+
+##``/api/v1/users/``
+Endpoint representing youtube video searches
+#####`PUT /api/v1/users`
+___URL Parameters:___
+NONE
+___Data Parameters:___
+newUsername and currentUsername 
+OR
+newPassword
+___Query String Parameters:___
+access_token
+___Returns:___
+An object containing the username and access token
+
+___Send Example:___
+```
+> POST /api/v1/users?access_token=gfhgfhghghghd
+{
+	"newUsername":"user"
+}
+
+```
+```
+> POST /api/v1/users?access_token=gfhgfhghghghd
+{
+	"newPassword":"password"
+}
+
+```
+___Response Example:___
+
+```
+{
+  "username": "surbhi1234",
+  "accessToken": "0onfjufpswkco48ggos4ookswgs0s0g0gw"
+}
+```
