@@ -128,9 +128,47 @@ usersRouter
         }
       })
       .catch(err => res.sendStatus(500));
-  });
+  })
   
-
+ //when user selects a playlist to be added or to be deleted from his fouritePlaylist array
+//playlist id and rating should be supplied in req.body
+   .put(passport.authenticate('bearer', { session: false }), (req, res) => {
+      User.findOne({ token: req.params.token })
+      .then(user => {
+         if (!user) return res.status(404).json({ message: 'User not found' });
+            if(user.favouritePlaylists.indexOf(req.body.playlistId) === -1 && (req.body.rating)){
+             let newRating = req.body.rating + 1;
+              const newFavouritePlaylist = user.favouritePlaylists;
+              newFavouritePlaylist.push(req.body.playlistId);
+              User.findOneAndUpdate({token: req.params.token },
+                                   { favouritePlaylists: newFavouritePlaylist }, 
+                                   { new: true })
+              .then(user => {
+                Playlist.findOneAndUpdate({_id:req.body.playlistId},{rating: newRating},{ new: true })
+                  .then(playlist =>{
+                   
+                return res.status(200).json({user:userResponse(user),playlist:playlist});
+                })
+              })
+            }else{
+              let newRating = req.body.rating - 1;
+              const newFavouritePlaylist = user.favouritePlaylists;
+              newFavouritePlaylist.splice(user.favouritePlaylists.indexOf(req.body.playlistId),1);
+              User.findOneAndUpdate({token: req.params.token },
+                                   { favouritePlaylists: newFavouritePlaylist }, 
+                                   { new: true })
+             .then(user => {
+               Playlist.findOneAndUpdate({_id:req.body.playlistId},{rating: newRating},{ new: true })
+                  .then(playlist =>{
+                     return res.status(200).json({user:userResponse(user), playlist:playlist});
+                 })
+             })
+            }
+      })
+       .catch(err => res.sendStatus(500));
+    });
+    
+    
 passport.use(
     new BearerStrategy(
         function(accessToken, done) {
