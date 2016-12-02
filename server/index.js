@@ -16,6 +16,7 @@ mongoose.Promise = global.Promise;
 
 
 import usersRouter from './routes/users';
+import playlistsRouter from './routes/playlists';
 import googleRouter from './config/google-oauth';
 import facebookRouter from './config/facebook-oauth';
 import youtubeRoute from './routes/external-api/youtubeRoute';
@@ -23,7 +24,6 @@ import vimeoRoute from './routes/external-api/vimeoRoute';
 import soundcloudRoute from './routes/external-api/soundcloudRoute';
 
 const app = express();
-import User from './models/user';
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -33,6 +33,7 @@ app.use(passport.session());
 app.post('*', jsonParser);
 app.put('*', jsonParser);
 app.use('/api/v1/users', usersRouter);
+app.use('/api/v1/playlists', playlistsRouter);
 app.use('/auth/google', googleRouter);
 app.use('/auth/facebook', facebookRouter);
 
