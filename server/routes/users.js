@@ -8,6 +8,14 @@ import User from '../models/user';
 import Playlist from '../models/playlist';
 const usersRouter = express.Router();
 
+function userResponse(user){
+  return {username: user.username, 
+         token: user.token, 
+         accessToken: user.accessToken, 
+         userId: user._id,
+         playlists: [],
+         favouritePlaylists: user.favouritePlaylists};
+}
 usersRouter
   .route('/')
 
@@ -31,12 +39,7 @@ usersRouter
     )
       .then(user => {
         res.set('Location', `/api/v1/users/${user.username}`);
-        return res.status(201).json({username: user.username, 
-                                     token: user.token, 
-                                     accessToken: user.accessToken, 
-                                     userId: user._id,
-                                     playlists: [],
-                                     favouritePlaylists: user.favouritePlaylists});
+        return res.status(201).json(userResponse(user));
       })
       .catch(err => {
         console.error(err);
@@ -63,17 +66,13 @@ usersRouter
       { new: true })
        .then(user => {
             if (!user) return res.status(404).json({message: 'User not found.'});
-            return res.json({username: user.username, 
-                             token: user.token, 
-                             accessToken: user.accessToken, 
-                             userId: user._id, 
-                             favouritePlaylists: user.favouritePlaylists});
+            return res.json(userResponse(user));
                            })
           .catch(() => res.sendStatus(500));
     }
     
     if(req.body.newPassword) {
-       User.findOne({ accessToken: req.query.access_token },function(err, user){ 
+       User.findOne({ accessToken: req.query.access_token },(err, user) => { 
         bcrypt.genSalt(10, (err, salt) => {
                       bcrypt.hash(req.body.newPassword, salt, (err, hashNewPassword) => {
                         console.log('hashNewPassword',hashNewPassword);
@@ -105,12 +104,7 @@ usersRouter
         if (!user) return res.status(404).json({ message: 'User not found' });
         if (req.query.access_token === user.accessToken){
            Playlist.find({userId: user._id}).then(playlist => {
-                return res.json({username: user.username, 
-                             token: user.token, 
-                             accessToken: user.accessToken, 
-                             userId: user._id,
-                             playlist: playlist,
-                             favouritePlaylists: user.favouritePlaylists});
+                return res.json(userResponse(user));
            });
         } else {
           //The else statement runs when an user checks out another user's playlist
@@ -119,8 +113,46 @@ usersRouter
                              userId: user._id,
                              playlist: playlist});
             });
-
         }
+      })
+      .catch(err => res.sendStatus(500));
+  })
+  //when user selects a playlist to be added or to be deleted from his fouritePlaylist array
+  //playlist id and rating should be supplied in req.body
+  .put(passport.authenticate('bearer', { session: false }), (req, res) => {
+     User.findOne({ token: req.params.token })
+     .then(user => {
+        if (!user) return res.status(404).json({ message: 'User not found' });
+           if(user.favouritePlaylists.indexOf(req.body.playlistId) === -1 && (req.body.rating)){
+            let newRating = req.body.rating + 1;
+             
+             
+             const newFavouritePlaylist = user.favouritePlaylists;
+             newFavouritePlaylist.push(req.body.playlistId);
+             User.findOneAndUpdate({token: req.params.token },
+                                  { favouritePlaylists: newFavouritePlaylist }, 
+                                  { new: true })
+             .then(user => {
+               Playlist.findOneAndUpdate({_id:req.body.playlistId},{rating: newRating},{ new: true })
+                 .then(playlist =>{
+               return res.status(200).json({user:{},playlist:playlist});
+               })
+             })
+           }else{
+             let newRating = req.body.rating - 1;
+             const newFavouritePlaylist = user.favouritePlaylists;
+             newFavouritePlaylist.splice(user.favouritePlaylists.indexOf(req.body.playlistId),1);
+             User.findOneAndUpdate({token: req.params.token },
+                                  { favouritePlaylists: newFavouritePlaylist }, 
+                                  { new: true })
+            .then(user => {
+              Playlist.findOneAndUpdate({_id:req.body.playlistId},{rating: newRating},{ new: true })
+                 .then(playlist =>{
+                    return res.status(200).json({user:userResponse(user),playlist:playlist});
+                })
+            })
+            //return res.json({message:"you cannot favourite it again"})
+           }
       })
       .catch(err => res.sendStatus(500));
   });
