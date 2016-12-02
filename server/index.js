@@ -4,7 +4,7 @@ import bodyParser from 'body-parser';
 const jsonParser = bodyParser.json();
 import mongoose from 'mongoose';
 import passport from './config/passport';
-// const setCORS = require('./config/cors');
+const setCORS = require('./config/cors');
 
 //this checks if the environement (env) is a developement environment and requires thee .env file. if it's not, it will take from heroku env config variables. 
 //probably will not need to require in index.js because we are not using the .env file here...
@@ -28,8 +28,9 @@ import User from './models/user';
 app.use(passport.initialize());
 app.use(passport.session());
 
-// app.use('/api/v1/*', setCORS);
-// app.options("", (req, res) => res.sendStatus(200));
+app.use('/api/v1/*', setCORS);
+app.use('/api/*', setCORS);
+app.options("", (req, res) => res.sendStatus(200));
 app.post('*', jsonParser);
 app.put('*', jsonParser);
 app.use('/api/v1/users', usersRouter);
