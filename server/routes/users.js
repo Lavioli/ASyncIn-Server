@@ -8,6 +8,14 @@ import User from '../models/user';
 import Playlist from '../models/playlist';
 const usersRouter = express.Router();
 
+function userResponse(user){
+ return {username: user.username, 
+          token: user.token, 
+         accessToken: user.accessToken, 
+         userId: user._id,
+         favouritePlaylists: user.favouritePlaylists};
+ }
+
 usersRouter
   .route('/')
 
@@ -32,14 +40,7 @@ usersRouter
       .then(user => {
         res.set('Location', `/api/v1/users/${user.username}`);
         return res.status(201).json(
-          {
-            username: user.username, 
-            token: user.token, 
-            accessToken: user.accessToken, 
-            userId: user._id,
-            playlists: [],
-            favouritePlaylists: user.favouritePlaylists
-          }
+          {user:userResponse(user),playlist: []}
         );
       })
       .catch(err => {
@@ -52,7 +53,6 @@ usersRouter
   //Change username or password
   //If the user wants to change username,currentUsername and newUsername will be sent to us in JSON format and accessToken via query
   //If the user wants to change the password, current and new password will be sent to us in JSON format and accessToken via query
-  //If the user wants to change the playlist send the updated playlist in JSON format and accessToken via query.
   .put(passport.authenticate('bearer', {session: false}), (req, res) => {
     if(req.body.currentUsername && req.body.newUsername){
       if(req.body.currentUsername === req.body.newUsername) {
@@ -68,13 +68,7 @@ usersRouter
       .then(user => {
           if (!user) return res.status(404).json({message: 'User not found.'});
           return res.json(
-            {
-              username: user.username, 
-              token: user.token, 
-              accessToken: user.accessToken, 
-              userId: user._id, 
-              favouritePlaylists: user.favouritePlaylists
-            }
+            {user:userResponse(user)}
           );
       })
       .catch(() => res.sendStatus(500));
@@ -116,14 +110,7 @@ usersRouter
         if (req.query.access_token === user.accessToken){
           Playlist.find({userId: user._id}).then(playlist => {
             return res.json(
-              {
-                username: user.username, 
-                token: user.token, 
-                accessToken: user.accessToken, 
-                userId: user._id,
-                playlist: playlist,
-                favouritePlaylists: user.favouritePlaylists
-              }
+              {user:userResponse(user),playlist: []}
             );
           });
         } else {
