@@ -10,23 +10,35 @@ const playlistsRouter = express.Router();
 
 playlistsRouter
   .route('/:userId')
-  
 
-  .post(passport.authenticate('bearer', {session: false}), (req, res) => {
-    
-    const newPlaylist = new Playlist(req.body);
-    
-    newPlaylist.save((err, playlist) => {
-      if (err) return res.status(400).json({message: 'Playlist format error'});
-      return res.json(playlist);
-    });
-  });
+  .post(passport.authenticate('bearer', {session: false}), 
+    (req, res) => {
+      User.findOne({_id: req.params.userId})
+      .then(user => {
+        if(user.accessToken === req.query.access_token) {
+          const newPlaylist = new Playlist(req.body);
+          newPlaylist.save(
+            (err, playlist) => {
+              if (err) return res.status(400).json(
+                {
+                  message: 'Playlist format error'
+                }
+              );
+              return res.json(playlist);
+            }
+          );
+        }
+      });
+    }
+  );
+ 
   
 playlistsRouter
   .route('/:userId/:playlistId')
   
-  .put(passport.authenticate('bearer', {session: false}), (req, res) => {
-    User.findOne({_id: req.params.userId})
+  .put(passport.authenticate('bearer', {session: false}), 
+    (req, res) => {
+      User.findOne({_id: req.params.userId})
       .then(user => {
         if(user.accessToken === req.query.access_token) {
           Playlist.findOneAndUpdate(
@@ -47,16 +59,8 @@ playlistsRouter
           .catch(() => res.status(400).json({message:'You\'re not authorized to modify this playlist'})
           )
         }
-      });
+    });
   });
-  
-    // if(req.body.newPlaylists) {
-    //   User.findOneAndUpdate({ accessToken: req.query.access_token }, { playlists: req.body.newPlaylists }, { new:true })
-    //     .then(user => {
-    //       if (!user) return res.status(404).json({ message: 'User not found.' });
-    //         return res.json(user);
-    //     });
-    // }
-  
-  
+
+
 export default playlistsRouter;
