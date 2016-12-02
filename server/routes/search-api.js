@@ -40,15 +40,19 @@ searchRouter
         			{
         				link: element.permalink_url,
         				title: element.title,
+        				thumbnail: element.artwork_url,
         				source: 'SoundCloud'
         			}
         		);
         	});
     		vimeo.data.data.forEach((element) => {
+    			let thumbnail;
+    			if(element.pictures) thumbnail = element.pictures.sizes[element.pictures.sizes.length - 1].link;
 				allResults.vimeo.push(
 					{
 						link: element.link,
 						title: element.name,
+						thumbnail: thumbnail || element.pictures,
 						source: 'Vimeo'
 					}
 				);
@@ -58,13 +62,11 @@ searchRouter
 					{
 						link: 'https://www.youtube.com/watch?v=' + element.id.videoId,
 						title: element.snippet.title,
+						thumbnail: element.snippet.thumbnails.high.url,
 						source: 'YouTube'
 					}
 				);
 			});
-			console.log(allResults.soundcloud.length);
-			console.log(allResults.youtube.length);
-			console.log(allResults.vimeo.length);
         	res.json(allResults);
 		})).catch(err => {
           return res.json(err);
