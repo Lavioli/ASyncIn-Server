@@ -10,9 +10,9 @@ Users can conduct video/music searches which utilizes the HTTP api from youtube,
 ###API search endpoints
 
 
-##``/api/search``
+##``/api/youtube``
 Endpoint representing youtube video searches
-#####`POST /api/search`
+#####`POST /api/youtube`
 ___URL Parameters:___
 NONE
 ___Data Parameters:___
@@ -25,7 +25,7 @@ An array of objects
 
 ___Send Example:___
 ```
-> POST /api/search
+> POST /api/youtube
 > {
 >   "search": "taylor swift"
 > }
@@ -34,46 +34,95 @@ ___Send Example:___
 ___Response Example:___
 
 ```
-{
-  "soundcloud": [
-    {
-      "link": "https://soundcloud.com/alibrustofski/bad-blood-taylor-swift-cover-by-ali-brustofski",
-      "title": "Bad Blood - Taylor Swift - Cover By Ali Brustofski",
-      "source": "SoundCloud"
-    },
-    {
-      "link": "https://soundcloud.com/madilyn-bailey-official_1457539153257/i-knew-you-were-trouble",
-      "title": "I Knew You Were Trouble - Madilyn Bailey ( Taylor Swift )",
-      "source": "SoundCloud"
-    }
-  ],
-  "vimeo": [
-    {
-      "link": "https://vimeo.com/31288701",
-      "title": "Taylor Swift \"Teardrops On My Guitar\"",
-      "source": "Vimeo"
-    },
-    {
-      "link": "https://vimeo.com/53812885",
-      "title": "8 Hours Taylor Swift",
-      "source": "Vimeo"
-    }
-  ],
-  "youtube": [
-    {
-      "link": "https://www.youtube.com/watch?v=e-ORhEE9VVg",
-      "title": "Taylor Swift - Blank Space",
-      "source": "YouTube"
-    },
-    {
-      "link": "https://www.youtube.com/watch?v=IdneKLhsWOQ",
-      "title": "Taylor Swift - Wildest Dreams",
-      "source": "YouTube"
-    }
-  ]
-}
+[
+  {
+    "link": "https://www.youtube.com/watch?v=e-ORhEE9VVg",
+    "title": "Taylor Swift - Blank Space",
+    "source": "YouTube"
+  },
+  {
+    "link": "https://www.youtube.com/watch?v=IdneKLhsWOQ",
+    "title": "Taylor Swift - Wildest Dreams",
+    "source": "YouTube"
+  }
+]
 ```
 
+##``/api/vimeo``
+Endpoint representing youtube video searches
+#####`POST /api/vimeo`
+___URL Parameters:___
+NONE
+___Data Parameters:___
+Search Object: 
+* search (string)
+___Query String Parameters:___
+NONE
+___Returns:___
+An array of objects
+
+___Send Example:___
+```
+> POST /api/vimeo
+> {
+>   "search": "taylor swift"
+> }
+```
+
+___Response Example:___
+
+```
+[
+  {
+    "link": "https://vimeo.com/31288701",
+    "title": "Taylor Swift \"Teardrops On My Guitar\"",
+    "source": "Vimeo"
+  },
+  {
+    "link": "https://vimeo.com/53812885",
+    "title": "8 Hours Taylor Swift",
+    "source": "Vimeo"
+  }
+]
+```
+
+##``/api/soundcloud``
+Endpoint representing youtube video searches
+#####`POST /api/vimeo`
+___URL Parameters:___
+NONE
+___Data Parameters:___
+Search Object: 
+* search (string)
+___Query String Parameters:___
+NONE
+___Returns:___
+An array of objects
+
+___Send Example:___
+```
+> POST /api/soundcloud
+> {
+>   "search": "taylor swift"
+> }
+```
+
+___Response Example:___
+
+```
+[
+  {
+    "link": "https://soundcloud.com/alibrustofski/bad-blood-taylor-swift-cover-by-ali-brustofski",
+    "title": "Bad Blood - Taylor Swift - Cover By Ali Brustofski",
+    "source": "SoundCloud"
+  },
+  {
+    "link": "https://soundcloud.com/madilyn-bailey-official_1457539153257/i-knew-you-were-trouble",
+    "title": "I Knew You Were Trouble - Madilyn Bailey ( Taylor Swift )",
+    "source": "SoundCloud"
+  }
+]
+```
 ##``/api/v1/users``
 Endpoint representing youtube video searches
 #####`GET /api/v1/users`
@@ -227,6 +276,65 @@ ___Response Example:___
   "playlist": []
 }
 ```
+##``/api/v1/users``
+Endpoint representing youtube video searches
+#####`PUT /api/v1/users/:token`
+___URL Parameters:___
+token
+___Data Parameters:___
+playlistId and rating
+___Query String Parameters:___
+access_token
+___Returns:___
+User and Playlist object 
+___Send Example:___
+```
+> PUT /api/v1/users/:token?access_token=gfhgfhghghghd
+
+{
+	"playlistId":"5841da9b38d6f14e07339d60",
+	"rating":28
+}
+
+```
+
+___Response Example:___
+
+```
+{
+  "user": {
+    "username": "admin",
+    "token": "email@gmail.com",
+    "accessToken": "duv1jvvka8ss4kkwogowcggg8s8csg8ws8",
+    "userId": "5841da5a38d6f14e07339d5f",
+    "favouritePlaylists": [
+      "5841da9b38d6f1454e07339d60"
+    ]
+  },
+  "playlist": {
+    "_id": "5841da9b38d6f14e07339d60",
+    "userId": "5841da5a38d6f14e07339d5f",
+    "name": "playlist name",
+    "rating": 27,
+    "isPublic": true,
+    "__v": 0,
+    "tracks": [
+      {
+        "title": "title1",
+        "link": "http://www.youtube.com",
+        "source": "youtube"
+      },
+      {
+        "title": "title2",
+        "link": "http://www.youtube.com",
+        "source": "youtube"
+      }
+    ]
+  }
+}
+```
+
+
 
 *****************************PLAYLIST ROUTES*****************
 ##``/api/v1/playlists``
