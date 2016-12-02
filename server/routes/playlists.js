@@ -73,7 +73,29 @@ playlistsRouter
         }
     });
   })
-  
+  .delete(passport.authenticate('bearer', {session: false}), 
+    (req, res) => {
+      Playlist.findOne({_id: req.params.playlistId})
+      .then(playlist => {
+        
+        if (!playlist) {
+              return res.status(404).json({
+                message: 'Playlist not found'
+            });
+        }
+        
+        if(playlist.userId.toString() === req.params.userId.toString()) {
+          Playlist.findByIdAndRemove(req.params.playlistId)
+            .then(playlist => {
+            return res.json({message: "The playlist is successfully deleted."})
+          });
+         }
+         
+         else{
+           return res.json({message: "You are not authorized to delete this playlist"})
+         }
+     });
+   })
 
 
 
