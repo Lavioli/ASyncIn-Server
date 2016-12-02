@@ -22,16 +22,31 @@ playlistsRouter
   });
   
 playlistsRouter
-  .route('/:playlistId')
+  .route('/:userId/:playlistId')
   
   .put(passport.authenticate('bearer', {session: false}), (req, res) => {
-    
-    User.findOne()
-    
-    Playlist.findOneAndUpdate({_id: req.params.playlistId}, {playlist: req.body}, {new: true})
-    .then(playlist => { 
-      return res.json(playlist);
-    });
+    User.findOne({_id: req.params.userId})
+      .then(user => {
+        if(user.accessToken === req.query.access_token) {
+          Playlist.findOneAndUpdate(
+            {
+              _id: req.params.playlistId
+            }, 
+            {
+              name: req.body.name, 
+              tracks: req.body.tracks, 
+              rating: req.body.rating, 
+              isPublic: req.body.isPublic
+            }, 
+            {new: true}
+          )
+          .then(playlist => {
+            return res.status(200).json(playlist);
+          })
+          .catch(() => res.status(400).json({message:'You\'re not authorized to modify this playlist'})
+          )
+        }
+      });
   });
   
       // if(req.body.newPlaylists) {
