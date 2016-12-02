@@ -129,7 +129,6 @@ usersRouter
 passport.use(
     new BearerStrategy(
         function(accessToken, done) {
-            console.log('bearer strategy');
             User.findOne({
                     accessToken: accessToken,
                 },

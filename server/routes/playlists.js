@@ -17,21 +17,22 @@ playlistsRouter
     
     newPlaylist.save((err, playlist) => {
       if (err) return res.status(400).json({message: 'Playlist format error'});
-      return res.json({message: 'Playlist has been added.'});
+      return res.json(playlist);
     });
   });
   
 playlistsRouter
-  .route('/:userId/:playlistId')
+  .route('/:playlistId')
   
   .put(passport.authenticate('bearer', {session: false}), (req, res) => {
     
-    // Playlist.findOneAndUpdate({_id: req.params.playlistId}, {isPublic: req.body.isPublic})
-    // .then(playlist => 
-    //   return res.json({message: 'Playlist is .'})
-    // )
-    // if(req.query.access_token === )
-  })
+    User.findOne()
+    
+    Playlist.findOneAndUpdate({_id: req.params.playlistId}, {playlist: req.body}, {new: true})
+    .then(playlist => { 
+      return res.json(playlist);
+    });
+  });
   
       // if(req.body.newPlaylists) {
     //   User.findOneAndUpdate({ accessToken: req.query.access_token }, { playlists: req.body.newPlaylists }, { new:true })
