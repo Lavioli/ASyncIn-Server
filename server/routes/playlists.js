@@ -9,6 +9,18 @@ import Playlist from '../models/playlist';
 const playlistsRouter = express.Router();
 
 playlistsRouter
+  .route('/:playlistId')
+
+  .get(passport.authenticate('bearer', {session: false}), 
+    (req, res) => {
+      Playlist.findOne({_id: req.params.playlistId})
+     .then(playlist => res.json(playlist)
+      )
+      .catch(err => res.sendStatus(500));
+    }
+  );
+
+playlistsRouter
   .route('/:userId')
 
   .post(passport.authenticate('bearer', {session: false}), 
@@ -57,10 +69,12 @@ playlistsRouter
             return res.status(200).json(playlist);
           })
           .catch(() => res.status(400).json({message:'You\'re not authorized to modify this playlist'})
-          )
+          );
         }
     });
-  });
+  })
+  
+
 
 
 export default playlistsRouter;
