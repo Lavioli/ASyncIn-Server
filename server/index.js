@@ -4,32 +4,46 @@ import bodyParser from 'body-parser';
 const jsonParser = bodyParser.json();
 import mongoose from 'mongoose';
 import passport from './config/passport';
-// const setCORS = require('./config/cors');
+const setCORS = require('./config/cors');
+
+//this checks if the environement (env) is a developement environment and requires thee .env file. if it's not, it will take from heroku env config variables. 
+//probably will not need to require in index.js because we are not using the .env file here...
+if (process.env.NODE_ENV === 'development') {
+  require('dotenv').config();
+}
 
 mongoose.Promise = global.Promise;
 
-// const playlistsRouter = require('./routes/playlists');
+
 import usersRouter from './routes/users';
+import playlistsRouter from './routes/playlists';
 import googleRouter from './config/google-oauth';
 import facebookRouter from './config/facebook-oauth';
+import youtubeRoute from './routes/external-api/youtubeRoute';
+import vimeoRoute from './routes/external-api/vimeoRoute';
+import soundcloudRoute from './routes/external-api/soundcloudRoute';
+
 const app = express();
-const User = require('./models/user');
-
-
 
 app.use(passport.initialize());
 app.use(passport.session());
 
-
-// app.use('/api/v1/*', setCORS);
-// app.options("", (req, res) => res.sendStatus(200));
+app.use('/api/v1/*', setCORS);
+app.use('/api/*', setCORS);
+app.options("", (req, res) => res.sendStatus(200));
 app.post('*', jsonParser);
 app.put('*', jsonParser);
 app.use('/api/v1/users', usersRouter);
+app.use('/api/v1/playlists', playlistsRouter);
 app.use('/auth/google', googleRouter);
 app.use('/auth/facebook', facebookRouter);
-// app.use('/api/v1/playlists', playlistsRouter);
-// app.use(passport.initialize());
+
+
+
+//HTTP calls to external api
+app.use('/api/youtube', youtubeRoute);
+app.use('/api/vimeo', vimeoRoute);
+app.use('/api/soundcloud', soundcloudRoute);
 
 const CUSTOM_PORT = isNaN(Number(process.argv[2])) ? null : Number(process.argv[2]);
 

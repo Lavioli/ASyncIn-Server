@@ -1,70 +1,159 @@
-const express = require('express');
+import express from 'express';
+import passport from '../config/passport';
+import bcrypt from 'bcrypt';
+import {Strategy as BearerStrategy} from 'passport-http-bearer';
+import tokenGenerator from '../config/tokenGenerator';
+import validateUser from './validators';
+import User from '../models/user';
+import Playlist from '../models/playlist';
 const usersRouter = express.Router();
-const passport = require('../config/passport');
-const bcrypt = require('bcrypt');
 
-const validateUser = require('./validators').validateUser;
-
-const User = require('../models/user');
+function userResponse(user){
+ return {username: user.username, 
+          token: user.token, 
+         accessToken: user.accessToken, 
+         userId: user._id,
+         favouritePlaylists: user.favouritePlaylists};
+ }
 
 usersRouter
   .route('/')
 
-  .get(passport.authenticate('basic', { session: false }), (req, res) => {
-    User.find()
-      .select('username')
-      .then(users => res.json(users))
+  .get(passport.authenticate('bearer', {session: false}), (req, res) => {
+    User.find({},'username token _id favouritePlaylists')
+      .then(users => res.json(users)
+      )
       .catch(err => res.sendStatus(500));
   })
 
   .post((req, res) => {
-    const validatorResponse = validateUser(req.body);
-    if (validatorResponse.error) return res.status(validatorResponse.status).json(validatorResponse.body);
-
-    User.createUser(req.body.username, req.body.password)
+    if(!req.body.username || !req.body.password || !req.body.email) {
+      return res.status(400).json({message: 'Invalid input.'});
+    }
+    User.createUser
+    (
+      req.body.username,
+      req.body.password, 
+      req.body.email,
+      tokenGenerator(34)
+    )
       .then(user => {
         res.set('Location', `/api/v1/users/${user.username}`);
-        return res.status(201).json({});
+        return res.status(201).json(
+          {user:userResponse(user),playlist: []}
+        );
       })
       .catch(err => {
         console.error(err);
-        if (err.status === 400) return res.status(400).json({ message: err.message });
-
+        if (err.status === 400) return res.status(400).json({message: err.message});
         return res.sendStatus(500);
       });
+  })
+  
+  //Change username or password
+  //If the user wants to change username,currentUsername and newUsername will be sent to us in JSON format and accessToken via query
+  //If the user wants to change the password, current and new password will be sent to us in JSON format and accessToken via query
+  .put(passport.authenticate('bearer', {session: false}), (req, res) => {
+    if(req.body.currentUsername && req.body.newUsername){
+      if(req.body.currentUsername === req.body.newUsername) {
+        return res.json({message: 'New username is same as the current username.'});
+      }
+    }
+    if(req.body.newUsername) {
+      User.findOneAndUpdate(
+        {accessToken: req.query.access_token},
+        { username: req.body.newUsername }, 
+        { new: true }
+      )
+      .then(user => {
+          if (!user) return res.status(404).json({message: 'User not found.'});
+          return res.json(
+            {user:userResponse(user)}
+          );
+      })
+      .catch(() => res.sendStatus(500));
+    }
+    if(req.body.newPassword) {
+      User.findOne({ accessToken: req.query.access_token },
+        function(err, user){ 
+          bcrypt.genSalt(10, (err, salt) => {
+            bcrypt.hash(req.body.newPassword, salt, 
+              (err, hashNewPassword) => {
+                User.findOneAndUpdate(
+                  {accessToken: req.query.access_token}, 
+                  {password: hashNewPassword }, 
+                  {new: true}
+                )
+                .then(user => {
+                  if (!user) return res.status(404).json({ message: 'User not found.' });
+                    return res.json({message: 'Your password has been changed successfully.'});
+                })
+                .catch(() => res.sendStatus(500));
+              }
+            );
+          });
+      });
+    }
+   if(!req.body.newUsername && !req.body.newPassword) {
+      return res.status(404).json({ message: 'Invalid input' });
+   }
   });
 
-usersRouter
-  .route('/:username')
 
+usersRouter
+  .route('/:token')
+  
   .get(passport.authenticate('bearer', { session: false }), (req, res) => {
-    User.findOne({ username: req.params.username })
-      .select('username')
+    User.findOne({ token: req.params.token })
       .then(user => {
         if (!user) return res.status(404).json({ message: 'User not found' });
-
-        return res.json(user);
+        if (req.query.access_token === user.accessToken){
+          Playlist.find({userId: user._id}).then(playlist => {
+            return res.json(
+              {user:userResponse(user),playlist: []}
+            );
+          });
+        } else {
+          //The else statement runs when an user checks out another user's playlist
+            Playlist.find({userId: user._id, isPublic: true})
+            .then(playlist => {
+                return res.json(
+                  {
+                    username: user.username,
+                    userId: user._id,
+                    playlist: playlist
+                  }
+                );
+            });
+        }
       })
       .catch(err => res.sendStatus(500));
+  });
+  
 
-  })
+passport.use(
+    new BearerStrategy(
+        function(accessToken, done) {
+            User.findOne({
+                    accessToken: accessToken,
+                },
+                function(err, user) {
+                    console.log(user);
+                    if (err) {
+                        return done(err);
+                    }
+                    if (!user) {
+                        return done(null, false);
+                    }
 
-  .put(passport.authenticate('basic', { session: false }), (req, res) => {
-    const validatorResponse = validateUser(req.body);
-    if (validatorResponse.error) return res.status(validatorResponse.status).json(validatorResponse.body);
-    if (req.user.username !== req.params.username) return res.sendStatus(401);
+                    return done(null, user, {
+                        scope: 'all'
+                    });
+                }
+            );
+        }
+    )
+);
 
-    bcrypt.genSalt(10, (err, salt) => {
-      bcrypt.hash(req.body.password, salt, (err, hash) => {
-        User.findOneAndUpdate({ username: req.user.username }, { username: req.body.username, password: hash })
-          .then(user => {
-            if (!user) return res.status(404).json({ message: 'User not found' });
 
-            return res.json({});
-          })
-          .catch(() => res.sendStatus(500));
-      });
-    });
-  })
-
-module.exports = usersRouter;
+export default usersRouter;

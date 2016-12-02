@@ -1,23 +1,29 @@
-/*const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
-const MessageSchema = new mongoose.Schema({
-  from: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
-  },
-  to: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
-  },
-  text: {
-    type: String,
-    required: true
-  }
+const PlaylistSchema = new mongoose.Schema({
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
+    name: {
+        type: String,
+        required: true
+    },
+    tracks:{
+        type: Array
+    },
+    rating:{
+        type: Number
+    },
+    isPublic:{
+        type: Boolean
+    },
+    createdDate:{
+        type: Date
+    }
 });
 
-const Message = mongoose.model('Message', MessageSchema);
+const Playlists = mongoose.model('Playlists', PlaylistSchema);
 
-module.exports = Message;
-*/
+export default Playlists;

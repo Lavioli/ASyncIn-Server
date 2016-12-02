@@ -3,12 +3,10 @@ import express from 'express';
 import passport from 'passport';
 import User from '../models/user';
 
-const GoogleStrategy = require('passport-google-oauth20').Strategy;
-const BearerStrategy = require('passport-http-bearer').Strategy;
+import {Strategy as GoogleStrategy} from 'passport-google-oauth20';
+import {Strategy as BearerStrategy} from 'passport-http-bearer';
 const googleRouter = express.Router();
 
-var secrets;
-    if (!process.env.CLIENT_ID) secrets = require('./client_secret');
 
 googleRouter.use(passport.initialize());
 googleRouter.use(passport.session());
@@ -26,9 +24,9 @@ passport.deserializeUser(function(id, done) {
 });
 
 passport.use(new GoogleStrategy({
-        clientID: process.env.CLIENT_ID || secrets.google.client_id,
-        clientSecret: process.env.CLIENT_SECRET || secrets.google.client_secret,
-        callbackURL: process.env.CALL_BACK_URL || secrets.google.callbackURL,
+        clientID: process.env.GOOGLE_CLIENT_ID,
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+        callbackURL: process.env.GOOGLE_CLIENT_CALLBACK_URL,
         passReqToCallback: true
     },
 
@@ -42,9 +40,10 @@ passport.use(new GoogleStrategy({
             }
             if (user) {
                 user.accessToken = accessToken;
+                
                 user.save(function(err){
                     return done(err, user);
-                })
+                });
             }
             else {
                 const newUser = new User({
@@ -52,6 +51,7 @@ passport.use(new GoogleStrategy({
                     accessToken: accessToken,
                     token: profile.id
                 });
+                
                 newUser.save(function(err, res) {
                     if (err) return done(err, res);
                     return done(null, newUser);
@@ -69,7 +69,7 @@ googleRouter.get('/callback', passport.authenticate('google', {failureRedirect: 
 	function(req, res) {
 		//successful authentication, redirect home
 		var accessToken = req.user.accessToken;
-		var redirectLink = '/home?access_token=' + accessToken;
+		var redirectLink = 'https://asyncin-client-surbi.c9users.io/home?access_token=' + accessToken;
 		res.redirect(redirectLink);
 	}
 );
@@ -99,4 +99,4 @@ passport.use(
     )
 );
 
-module.exports = googleRouter;
+export default googleRouter;

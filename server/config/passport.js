@@ -1,10 +1,10 @@
-const passport = require('passport');
-const BasicStrategy = require('passport-http').BasicStrategy;
+import passport from 'passport';
+import {BasicStrategy} from 'passport-http';
 
-const User = require('../models/user');
+import User from '../models/user';
 
-passport.use(new BasicStrategy((username, password, cb) => {
-  return User.findOneAndValidate(username, password)
+passport.use(new BasicStrategy((token, password, cb) => {
+  return User.findOneAndValidate(token, password)
     .then(user => {
       if (!user) return cb(null, false);
 
@@ -13,5 +13,4 @@ passport.use(new BasicStrategy((username, password, cb) => {
 
     .catch(err => cb(err));
 }));
-
-module.exports = passport;
+export default passport;

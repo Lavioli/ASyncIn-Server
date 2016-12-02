@@ -3,12 +3,11 @@ import express from 'express';
 import passport from 'passport';
 import User from '../models/user';
 
-const FacebookStrategy = require('passport-facebook').Strategy;
-const BearerStrategy = require('passport-http-bearer').Strategy;
+import {Strategy as FacebookStrategy} from 'passport-facebook';
+import {Strategy as BearerStrategy} from 'passport-http-bearer';
 const facebookRouter = express.Router();
 
-var secrets;
-    if (!process.env.CLIENT_ID) secrets = require('./client_secret');
+
 
 facebookRouter.use(passport.initialize());
 facebookRouter.use(passport.session());
@@ -16,9 +15,9 @@ facebookRouter.use(passport.session());
 
 passport.use(
     new FacebookStrategy({
-        clientID: process.env.CLIENT_ID || secrets.facebook.client_id,
-        clientSecret: process.env.CLIENT_SECRET || secrets.facebook.client_secret,
-        callbackURL: process.env.CALL_BACK_URL || secrets.facebook.callbackURL
+        clientID: process.env.FACEBOOK_CLIENT_ID ,
+        clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
+        callbackURL: process.env.FACEBOOK_CLIENT_CALLBACK_URL
         },
         
         function(accessToken, refreshToken, profile, done) {
@@ -60,7 +59,7 @@ facebookRouter.get('/callback',
   passport.authenticate('facebook', { session: false, failureRedirect: "/login" }),
   function(req, res) {
     var accessToken = req.user.accessToken;
-    res.redirect("/home?access_token=" + accessToken);
+    res.redirect("https://asyncin-client-surbi.c9users.io/home?access_token=" + accessToken);
   }
 );
 
@@ -88,4 +87,4 @@ passport.use(
 );
 
 
-module.exports = facebookRouter;
+export default facebookRouter;

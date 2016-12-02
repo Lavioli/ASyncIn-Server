@@ -1,7 +1,10 @@
-const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
+import mongoose from 'mongoose';
+import bcrypt from 'bcrypt';
 
 const UserSchema = new mongoose.Schema({
+  //For frontend's local login registration, username is display name.
+  //For Google, email address before @gmail.com is displayname.
+  //For Facebook, display name is username.
   username: {
     type: String,
     required: true
@@ -13,19 +16,24 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  //For local login, email will be considered token.
+  //For Facebook and Google logins, profile.id will considered token.
   token: {
     type: String,
     required: true,
     unique: true
+  },
+  favouritePlaylists:{
+    type: Array
   }
 });
 
-UserSchema.statics.createUser = function(username, password, id) {
-  const newUser = { username };
+UserSchema.statics.createUser = function(username, password, token, accessToken, id) {
+  const newUser = { username:username, token:token, accessToken:accessToken};
   if (id) newUser._id = id;
 
   return new Promise((res, rej) => {
-    this.findOne({ username })
+    this.findOne({ token })
       .then(user => {
         if (user) return rej({ status: 400, message: 'User already exists'});
 
@@ -51,9 +59,9 @@ UserSchema.statics.createUser = function(username, password, id) {
   });
 };
 
-UserSchema.statics.findOneAndValidate = function(username, password) {
+UserSchema.statics.findOneAndValidate = function(token, password) {
   return new Promise((res, rej) => {
-    this.findOne({ username })
+    this.findOne({ token })
       .then(user => {
         if (!user) return res(null);
 
@@ -73,4 +81,4 @@ UserSchema.statics.findOneAndValidate = function(username, password) {
 
 var User = mongoose.model('User', UserSchema);
 
-module.exports = User;
+export default User;
