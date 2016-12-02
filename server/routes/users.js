@@ -5,20 +5,20 @@ import {Strategy as BearerStrategy} from 'passport-http-bearer';
 import tokenGenerator from '../config/tokenGenerator';
 import validateUser from './validators';
 import User from '../models/user';
+import Playlist from '../models/playlist';
 const usersRouter = express.Router();
 
 usersRouter
   .route('/')
 
-  .get(passport.authenticate('bearer', { session: false }), (req, res) => {
-    User.find({},'username token accessToken _id favouritePlaylists')
+  .get(passport.authenticate('bearer', {session: false}), (req, res) => {
+    User.find({},'username token _id favouritePlaylists')
       .then(users => res.json(users)
       )
       .catch(err => res.sendStatus(500));
   })
 
   .post((req, res) => {
-    
     if(!req.body.username || !req.body.password || !req.body.email) {
       return res.status(400).json({message: 'Invalid input.'});
     }
@@ -34,7 +34,8 @@ usersRouter
         return res.status(201).json({username: user.username, 
                                      token: user.token, 
                                      accessToken: user.accessToken, 
-                                     userId: user._id, 
+                                     userId: user._id,
+                                     playlists: [],
                                      favouritePlaylists: user.favouritePlaylists});
       })
       .catch(err => {
@@ -103,14 +104,22 @@ usersRouter
       .then(user => {
         if (!user) return res.status(404).json({ message: 'User not found' });
         if (req.query.access_token === user.accessToken){
-            return res.json({username: user.username, 
+           Playlist.find({userId: user._id}).then(playlist => {
+                return res.json({username: user.username, 
                              token: user.token, 
                              accessToken: user.accessToken, 
-                             userId: user._id, 
+                             userId: user._id,
+                             playlist: playlist,
                              favouritePlaylists: user.favouritePlaylists});
+           });
         } else {
-            return res.json({username: user.username,
-                             userId: user._id});
+          //The else statement runs when an user checks out another user's playlist
+            Playlist.find({userId: user._id, isPublic: true}).then(playlist => {
+                return res.json({username: user.username,
+                             userId: user._id,
+                             playlist: playlist});
+            });
+
         }
       })
       .catch(err => res.sendStatus(500));
@@ -120,7 +129,6 @@ usersRouter
 passport.use(
     new BearerStrategy(
         function(accessToken, done) {
-            console.log('bearer strategy');
             User.findOne({
                     accessToken: accessToken,
                 },
@@ -145,4 +153,4 @@ passport.use(
 
 
 
-module.exports = usersRouter;
+export default usersRouter;

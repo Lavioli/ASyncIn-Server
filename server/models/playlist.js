@@ -20,8 +20,7 @@ const PlaylistSchema = new mongoose.Schema({
         type: Boolean
     },
     createdDate:{
-        type: Date,
-        required:true
+        type: Date
     }
 });
 

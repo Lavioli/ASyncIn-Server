@@ -43,8 +43,7 @@ passport.use(new GoogleStrategy({
                 
                 user.save(function(err){
                     return done(err, user);
-                })
-                console.log('user',user);
+                });
             }
             else {
                 const newUser = new User({
