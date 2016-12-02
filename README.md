@@ -10,9 +10,9 @@ Users can conduct video/music searches which utilizes the HTTP api from youtube,
 ###API search endpoints
 
 
-##``/api/youtube``
+##``/api/search``
 Endpoint representing youtube video searches
-#####`POST /api/youtube`
+#####`POST /api/search`
 ___URL Parameters:___
 NONE
 ___Data Parameters:___
@@ -25,7 +25,7 @@ An array of objects
 
 ___Send Example:___
 ```
-> POST /api/youtube
+> POST /api/search
 > {
 >   "search": "taylor swift"
 > }
@@ -34,95 +34,46 @@ ___Send Example:___
 ___Response Example:___
 
 ```
-[
-  {
-    "link": "https://www.youtube.com/watch?v=e-ORhEE9VVg",
-    "title": "Taylor Swift - Blank Space",
-    "source": "YouTube"
-  },
-  {
-    "link": "https://www.youtube.com/watch?v=IdneKLhsWOQ",
-    "title": "Taylor Swift - Wildest Dreams",
-    "source": "YouTube"
-  }
-]
+{
+  "soundcloud": [
+    {
+      "link": "https://soundcloud.com/alibrustofski/bad-blood-taylor-swift-cover-by-ali-brustofski",
+      "title": "Bad Blood - Taylor Swift - Cover By Ali Brustofski",
+      "source": "SoundCloud"
+    },
+    {
+      "link": "https://soundcloud.com/madilyn-bailey-official_1457539153257/i-knew-you-were-trouble",
+      "title": "I Knew You Were Trouble - Madilyn Bailey ( Taylor Swift )",
+      "source": "SoundCloud"
+    }
+  ],
+  "vimeo": [
+    {
+      "link": "https://vimeo.com/31288701",
+      "title": "Taylor Swift \"Teardrops On My Guitar\"",
+      "source": "Vimeo"
+    },
+    {
+      "link": "https://vimeo.com/53812885",
+      "title": "8 Hours Taylor Swift",
+      "source": "Vimeo"
+    }
+  ],
+  "youtube": [
+    {
+      "link": "https://www.youtube.com/watch?v=e-ORhEE9VVg",
+      "title": "Taylor Swift - Blank Space",
+      "source": "YouTube"
+    },
+    {
+      "link": "https://www.youtube.com/watch?v=IdneKLhsWOQ",
+      "title": "Taylor Swift - Wildest Dreams",
+      "source": "YouTube"
+    }
+  ]
+}
 ```
 
-##``/api/vimeo``
-Endpoint representing youtube video searches
-#####`POST /api/vimeo`
-___URL Parameters:___
-NONE
-___Data Parameters:___
-Search Object: 
-* search (string)
-___Query String Parameters:___
-NONE
-___Returns:___
-An array of objects
-
-___Send Example:___
-```
-> POST /api/vimeo
-> {
->   "search": "taylor swift"
-> }
-```
-
-___Response Example:___
-
-```
-[
-  {
-    "link": "https://vimeo.com/31288701",
-    "title": "Taylor Swift \"Teardrops On My Guitar\"",
-    "source": "Vimeo"
-  },
-  {
-    "link": "https://vimeo.com/53812885",
-    "title": "8 Hours Taylor Swift",
-    "source": "Vimeo"
-  }
-]
-```
-
-##``/api/soundcloud``
-Endpoint representing youtube video searches
-#####`POST /api/vimeo`
-___URL Parameters:___
-NONE
-___Data Parameters:___
-Search Object: 
-* search (string)
-___Query String Parameters:___
-NONE
-___Returns:___
-An array of objects
-
-___Send Example:___
-```
-> POST /api/soundcloud
-> {
->   "search": "taylor swift"
-> }
-```
-
-___Response Example:___
-
-```
-[
-  {
-    "link": "https://soundcloud.com/alibrustofski/bad-blood-taylor-swift-cover-by-ali-brustofski",
-    "title": "Bad Blood - Taylor Swift - Cover By Ali Brustofski",
-    "source": "SoundCloud"
-  },
-  {
-    "link": "https://soundcloud.com/madilyn-bailey-official_1457539153257/i-knew-you-were-trouble",
-    "title": "I Knew You Were Trouble - Madilyn Bailey ( Taylor Swift )",
-    "source": "SoundCloud"
-  }
-]
-```
 ##``/api/v1/users``
 Endpoint representing youtube video searches
 #####`GET /api/v1/users`

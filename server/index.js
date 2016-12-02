@@ -22,6 +22,7 @@ import facebookRouter from './config/facebook-oauth';
 import youtubeRoute from './routes/external-api/youtubeRoute';
 import vimeoRoute from './routes/external-api/vimeoRoute';
 import soundcloudRoute from './routes/external-api/soundcloudRoute';
+import searchRouter from './routes/search-api';
 
 const app = express();
 
@@ -44,6 +45,7 @@ app.use('/auth/facebook', facebookRouter);
 app.use('/api/youtube', youtubeRoute);
 app.use('/api/vimeo', vimeoRoute);
 app.use('/api/soundcloud', soundcloudRoute);
+app.use('/api/search', searchRouter);
 
 const CUSTOM_PORT = isNaN(Number(process.argv[2])) ? null : Number(process.argv[2]);
 
