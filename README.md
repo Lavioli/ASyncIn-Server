@@ -256,7 +256,7 @@ User object containing the username, token, userId,favouritedPlaylists and acces
 
 ___Send Example:___
 ```
-> GET /api/v1/users/_token_?access_token=gfhgfhghghghd
+> GET /api/v1/users/:token?access_token=gfhgfhghghghd
 
 ```
 
@@ -278,6 +278,47 @@ ___Response Example:___
 ```
 
 *****************************PLAYLIST ROUTES*****************
+##``/api/v1/playlists``
+Endpoint representing youtube video searches
+#####`GET /api/v1/playlists/:userId`
+___URL Parameters:___
+playlistId
+___Data Parameters:___
+NONE
+___Query String Parameters:___
+access_token
+___Returns:___
+Playlist object 
+
+___Send Example:___
+```
+> GET /api/v1/playlists/:playlistId?access_token=gfhgfhghghghd
+
+```
+___Response Example:___
+
+```
+{
+  "_id": "5841c50e2e6a5c4d56098686",
+  "userId": "5841ae0941f10b4bc773cc87",
+  "name": "playlist name",
+  "rating": 10,
+  "isPublic": true,
+  "__v": 0,
+  "tracks": [
+    {
+      "title": "title221",
+      "link": "http://www.youtube.com",
+      "source": "youtube"
+    },
+    {
+      "title": "title222",
+      "link": "http://www.youtube.com",
+      "source": "youtube"
+    }
+  ]
+}
+```
 
 ##``/api/v1/playlists``
 Endpoint representing youtube video searches
@@ -293,7 +334,7 @@ Playlist object having userId, name, tracks array, rating and isPublic
 
 ___Send Example:___
 ```
-> POST /api/v1/playlists/_userId_?access_token=gfhgfhghghghd
+> POST /api/v1/playlists/:userId?access_token=gfhgfhghghghd
 {
 	"userId": "583f5fa1a9e99d159bf23e4d",
 	"name": "playlist name",
@@ -353,7 +394,7 @@ Playlist object having userId, name, tracks array, rating and isPublic
 
 ___Send Example:___
 ```
-> PUT /api/v1/playlists/_userId_/_playlistId_?access_token=gfhgfhghghghd
+> PUT /api/v1/playlists/:userId/:playlistId?access_token=gfhgfhghghghd
 {
 	"userId": "583f5fa1a9e99d159bf23e4d",
 	"name": "playlist name",
@@ -396,5 +437,29 @@ ___Response Example:___
       "title": "title2"
     }
   ]
+}
+```
+##``/api/v1/playlists``
+Endpoint representing youtube video searches
+#####`DELETE /api/v1/:userId/:playlistId`
+___URL Parameters:___
+playlistId
+___Data Parameters:___
+NONE
+___Query String Parameters:___
+access_token
+___Returns:___
+message 
+
+___Send Example:___
+```
+> DELETE /api/v1/playlists/:playlistId?access_token=gfhgfhghghghd
+
+```
+___Response Example:___
+
+```
+{
+  "message": "The playlist is successfully deleted."
 }
 ```
