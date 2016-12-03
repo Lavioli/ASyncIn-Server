@@ -20,7 +20,13 @@ usersRouter
 
   .get(passport.authenticate('bearer', {session: false}), (req, res) => {
     User.find({},'username token _id favouritePlaylists')
-      .then(users => res.json(users)
+      .then(users => {
+        Playlist.find({userId: users._id}).then(playlist => {
+            return res.json(
+              {user:users, playlist: playlist}
+            );
+          });
+      }
       )
       .catch(err => res.sendStatus(500));
   })
