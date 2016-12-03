@@ -14,12 +14,12 @@ searchRouter
 		const soundCloudData = querystring.stringify({
 			client_id: process.env.SOUNDCLOUD_CLIENT_ID,
 			q: req.body.search,
-			limit: 75
+			limit: 10
 		});
 		const vimeoData = querystring.stringify({
 			access_token: process.env.VIMEO_ACCESS_TOKEN,
 			query: req.body.search,
-			per_page: 50,
+			per_page: 5,
 			page: 1
 		});
 		const youtubeData = querystring.stringify({
@@ -27,7 +27,7 @@ searchRouter
 		  part: 'snippet',
 		  type: 'video',
 		  q: req.body.search,
-		  maxResults: 50
+		  maxResults: 5
 		});
 		axios.all([
 			axios.get('https://www.googleapis.com/youtube/v3/search?' + youtubeData),
