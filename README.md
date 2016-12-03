@@ -79,7 +79,7 @@ ___Response Example:___
   ]
 }
 ```
-******************************USERS***********
+
 ##``/api/v1/users``
 Endpoint representing login 
 #####`GET /api/v1/users/login/:token`
@@ -345,10 +345,72 @@ ___Response Example:___
   }
 }
 ```
+##``/api/v1/playlists``
+For Top Playlists
+#####`GET /api/v1/playlists`
+___URL Parameters:___
+NONE
+___Data Parameters:___
+NONE
+___Query String Parameters:___
+access_token
+___Returns:___
+Playlist object having public playlist and sorted in descending order 
+
+___Send Example:___
+```
+> GET /api/v1/playlists?access_token=gfhgfhghghghd
+
+```
+___Response Example:___
+
+```
+[
+  {
+    "_id": "5842840117424e08bb204bda",
+    "userId": "5842839317424e08bb204bd6",
+    "name": "playlist 12name11",
+    "rating": 23,
+    "isPublic": true,
+    "__v": 0,
+    "tracks": [
+      {
+        "title": "title1",
+        "link": "http://www.youtube.com",
+        "source": "youtube"
+      },
+      {
+        "title": "title2",
+        "link": "http://www.youtube.com",
+        "source": "youtube"
+      }
+    ]
+  },
+  {
+    "_id": "584283b517424e08bb204bd7",
+    "userId": "5842839317424e08bb204bd6",
+    "name": "playlist name111",
+    "rating": 10,
+    "isPublic": true,
+    "__v": 0,
+    "tracks": [
+      {
+        "title": "title1",
+        "link": "http://www.youtube.com",
+        "source": "youtube"
+      },
+      {
+        "title": "title2",
+        "link": "http://www.youtube.com",
+        "source": "youtube"
+      }
+    ]
+  }
+]
+```
 
 
 
-*****************************PLAYLIST ROUTES*****************
 ##``/api/v1/playlists``
 
 #####`GET /api/v1/playlists/:userId`

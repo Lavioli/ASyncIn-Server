@@ -4,6 +4,21 @@ import User from '../models/user';
 import Playlist from '../models/playlist';
 const playlistsRouter = express.Router();
 
+
+playlistsRouter
+  .route('/')
+
+//top playlist
+  .get(passport.authenticate('bearer', {session: false}), 
+    (req, res) => {
+      Playlist.find({isPublic:true}).sort([['rating','desc']])
+     .then(playlist => res.json(playlist)
+      )
+      .catch(err => res.sendStatus(500));
+    }
+  );
+  
+ 
 playlistsRouter
   .route('/:playlistId')
 
@@ -19,6 +34,7 @@ playlistsRouter
 
 playlistsRouter
   .route('/:userId')
+  
 
   .post(passport.authenticate('bearer', {session: false}), 
     (req, res) => {
