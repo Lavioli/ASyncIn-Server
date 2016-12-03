@@ -20,6 +20,7 @@ playlistsRouter
     }
   );
 
+
 playlistsRouter
   .route('/:userId')
 
@@ -28,17 +29,21 @@ playlistsRouter
       User.findOne({_id: req.params.userId})
       .then(user => {
         if(user.accessToken === req.query.access_token && user._id.toString() === req.body.userId.toString()) {
-          const newPlaylist = new Playlist(req.body);
-          newPlaylist.save(
-            (err, playlist) => {
-              if (err) return res.status(400).json(
-                {
-                  message: 'Playlist format error'
-                }
-              );
-              return res.json(playlist);
+          Playlist.find({userId: req.body.userId})
+          .then(playlists => {
+            for(var i=0; i<playlists.length ; i++) {
+              if(playlists[i].name === req.body.name) {
+                return res.status(400).json({message: "This playlist name already exists"});
+              }
             }
-          );
+            const newPlaylist = new Playlist(req.body);
+              newPlaylist.save((err, playlist) => {
+                if (err) {
+                  return res.status(400).json({message: 'Playlist format error'});
+                }
+              return res.json(playlist);
+              });
+          });
         } else {
             return res.status(400).json({message:'You\'re not authorized to modify this playlist'});
         }
@@ -54,7 +59,16 @@ playlistsRouter
     (req, res) => {
       User.findOne({_id: req.params.userId})
       .then(user => {
-        if(user.accessToken === req.query.access_token && user._id === req.body.userId) {
+        if(user.accessToken === req.query.access_token && user._id.toString() === req.body.userId.toString()) {
+          Playlist.find({userId: req.body.userId})
+          .then(playlists => {
+            for(var i=0; i<playlists.length ; i++) {
+              if(playlists[i].name === req.body.name) {
+                return res.status(400).json({message: "This playlist name already exists"});
+              }
+            }
+          }
+          );
           Playlist.findOneAndUpdate(
             {
               _id: req.params.playlistId
@@ -76,6 +90,37 @@ playlistsRouter
       });
     }
   )
+  
+  
+  // .put(passport.authenticate('bearer', {session: false}), 
+  //   (req, res) => {
+  //     User.findOne({_id: req.params.userId})
+  //     .then(user => {
+  //       if(user.accessToken === req.query.access_token && user._id.toString() === req.body.userId.toString()) {
+  //         Playlist.findOneAndUpdate(
+  //           {
+  //             _id: req.params.playlistId
+  //           }, 
+  //           {
+  //             name: req.body.name, 
+  //             tracks: req.body.tracks, 
+  //             rating: req.body.rating, 
+  //             isPublic: req.body.isPublic
+  //           }, 
+  //           {new: true}
+  //         )
+  //         .then((err, playlist) => {
+  //           if (err) {
+  //             throw new Error;
+  //           }
+  //           return res.status(200).json(playlist);
+  //         }).catch((err) => res.status(400).json('Duplicate playlist name.'));
+  //       } else {
+  //           return res.status(400).json({message:'You\'re not authorized to modify this playlist'});
+  //       }
+  //     });
+  //   }
+  // )
   
   .delete(passport.authenticate('bearer', {session: false}), 
     (req, res) => {
