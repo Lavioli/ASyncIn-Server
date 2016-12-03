@@ -1,9 +1,5 @@
 import express from 'express';
-import bcrypt from 'bcrypt';
-import {Strategy as BearerStrategy} from 'passport-http-bearer';
 import passport from '../config/passport';
-import tokenGenerator from '../config/tokenGenerator';
-import validateUser from './validators';
 import User from '../models/user';
 import Playlist from '../models/playlist';
 const playlistsRouter = express.Router();
@@ -91,37 +87,6 @@ playlistsRouter
     }
   )
   
-  
-  // .put(passport.authenticate('bearer', {session: false}), 
-  //   (req, res) => {
-  //     User.findOne({_id: req.params.userId})
-  //     .then(user => {
-  //       if(user.accessToken === req.query.access_token && user._id.toString() === req.body.userId.toString()) {
-  //         Playlist.findOneAndUpdate(
-  //           {
-  //             _id: req.params.playlistId
-  //           }, 
-  //           {
-  //             name: req.body.name, 
-  //             tracks: req.body.tracks, 
-  //             rating: req.body.rating, 
-  //             isPublic: req.body.isPublic
-  //           }, 
-  //           {new: true}
-  //         )
-  //         .then((err, playlist) => {
-  //           if (err) {
-  //             throw new Error;
-  //           }
-  //           return res.status(200).json(playlist);
-  //         }).catch((err) => res.status(400).json('Duplicate playlist name.'));
-  //       } else {
-  //           return res.status(400).json({message:'You\'re not authorized to modify this playlist'});
-  //       }
-  //     });
-  //   }
-  // )
-  
   .delete(passport.authenticate('bearer', {session: false}), 
     (req, res) => {
       Playlist.findOne({_id: req.params.playlistId})
@@ -134,15 +99,14 @@ playlistsRouter
         if (playlist.userId.toString() === req.params.userId.toString()) {
           Playlist.findByIdAndRemove(req.params.playlistId)
             .then(playlist => {
-            return res.json({message: "The playlist is successfully deleted."})
+            return res.json({message: "The playlist is successfully deleted."});
           });
          }
          else{
-           return res.json({message: "You are not authorized to delete this playlist"})
+           return res.json({message: "You are not authorized to delete this playlist"});
          }
      });
-   })
-
+   });
 
 
 export default playlistsRouter;

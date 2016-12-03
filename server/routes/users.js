@@ -3,7 +3,6 @@ import passport from '../config/passport';
 import bcrypt from 'bcrypt';
 import {Strategy as BearerStrategy} from 'passport-http-bearer';
 import tokenGenerator from '../config/tokenGenerator';
-import validateUser from './validators';
 import User from '../models/user';
 import Playlist from '../models/playlist';
 const usersRouter = express.Router();
@@ -148,8 +147,8 @@ usersRouter
                   .then(playlist =>{
                    
                 return res.status(200).json({user:userResponse(user),playlist:playlist});
-                })
-              })
+                });
+              });
             }else{
               let newRating = req.body.rating - 1;
               const newFavouritePlaylist = user.favouritePlaylists;
@@ -161,8 +160,8 @@ usersRouter
                Playlist.findOneAndUpdate({_id:req.body.playlistId},{rating: newRating},{ new: true })
                   .then(playlist =>{
                      return res.status(200).json({user:userResponse(user), playlist:playlist});
-                 })
-             })
+                 });
+             });
             }
       })
        .catch(err => res.sendStatus(500));
@@ -179,9 +178,9 @@ usersRouter
           return res.json({user:userResponse(user), playlist: playlist});
         })
       .catch(err => res.sendStatus(500))
-      )
+      );
     }
-  )
+  );
   
 passport.use(
     new BearerStrategy(
