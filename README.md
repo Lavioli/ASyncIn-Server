@@ -79,9 +79,64 @@ ___Response Example:___
   ]
 }
 ```
+******************************USERS***********
+##``/api/v1/users``
+Endpoint representing login 
+#####`GET /api/v1/users/login/:token`
+___URL Parameters:___
+token
+___Data Parameters:___
+NONE
+___Query String Parameters:___
+NONE
+___Returns:___
+User's object and Playlist's object
+
+___Send Example:___
+```
+> GET /api/v1/users/login/:token
+
+```
+___Response Example:___
+
+```
+{
+  "user": {
+    "username": "admin",
+    "token": "email@gmail.com",
+    "accessToken": "duv1jvvka8ss4kkwogowcggg8s8csg8ws8",
+    "userId": "5841da5a38d6f14e07339d5f",
+    "favouritePlaylists": [
+      "5841da9b38d6f1454e07339d60"
+    ]
+  },
+  "playlist": [
+    {
+      "_id": "5841da9b38d6f14e07339d60",
+      "userId": "5841da5a38d6f14e07339d5f",
+      "name": "playlist name",
+      "rating": 27,
+      "isPublic": true,
+      "__v": 0,
+      "tracks": [
+        {
+          "title": "title1",
+          "link": "http://www.youtube.com",
+          "source": "youtube"
+        },
+        {
+          "title": "title2",
+          "link": "http://www.youtube.com",
+          "source": "youtube"
+        }
+      ]
+    }
+  ]
+}
+```
 
 ##``/api/v1/users``
-Endpoint representing youtube video searches
+Endpoint representing 
 #####`GET /api/v1/users`
 ___URL Parameters:___
 NONE
@@ -117,7 +172,7 @@ ___Response Example:___
 ```
 
 ##``/api/v1/users``
-Endpoint representing youtube video searches
+
 #####`POST /api/v1/users`
 ___URL Parameters:___
 NONE
@@ -153,7 +208,7 @@ ___Response Example:___
 ```
 
 ##``/api/v1/users/``
-Endpoint representing youtube video searches
+
 #####`PUT /api/v1/users`
 ___URL Parameters:___
 NONE
@@ -200,7 +255,7 @@ On password change
 ```
 
 ##``/api/v1/users``
-Endpoint representing youtube video searches
+
 #####`GET /api/v1/users/:token`
 ___URL Parameters:___
 token
@@ -234,7 +289,7 @@ ___Response Example:___
 }
 ```
 ##``/api/v1/users``
-Endpoint representing youtube video searches
+
 #####`PUT /api/v1/users/:token`
 ___URL Parameters:___
 token
@@ -295,7 +350,7 @@ ___Response Example:___
 
 *****************************PLAYLIST ROUTES*****************
 ##``/api/v1/playlists``
-Endpoint representing youtube video searches
+
 #####`GET /api/v1/playlists/:userId`
 ___URL Parameters:___
 playlistId
@@ -337,7 +392,7 @@ ___Response Example:___
 ```
 
 ##``/api/v1/playlists``
-Endpoint representing youtube video searches
+
 #####`POST /api/v1/playlists/:userId`
 ___URL Parameters:___
 userId
@@ -397,7 +452,7 @@ ___Response Example:___
 ```
 
 ##``/api/v1/playlists``
-Endpoint representing youtube video searches
+
 #####`PUT /api/v1/playlists/:userId/:playlistId`
 ___URL Parameters:___
 userId and playlistId
@@ -456,7 +511,7 @@ ___Response Example:___
 }
 ```
 ##``/api/v1/playlists``
-Endpoint representing youtube video searches
+
 #####`DELETE /api/v1/:userId/:playlistId`
 ___URL Parameters:___
 playlistId
