@@ -115,7 +115,7 @@ usersRouter
         if (req.query.access_token === user.accessToken){
           Playlist.find({userId: user._id}).then(playlist => {
             return res.json(
-              {user:userResponse(user), playlist: []}
+              {user:userResponse(user), playlist: playlist}
             );
           });
         } else {
