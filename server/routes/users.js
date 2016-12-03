@@ -110,7 +110,7 @@ usersRouter
         if (req.query.access_token === user.accessToken){
           Playlist.find({userId: user._id}).then(playlist => {
             return res.json(
-              {user:userResponse(user),playlist: playlist}
+              {user:userResponse(user), playlist: []}
             );
           });
         } else {
@@ -118,11 +118,9 @@ usersRouter
             Playlist.find({userId: user._id, isPublic: true})
             .then(playlist => {
                 return res.json(
-                  {user:
-                    {
-                      username: user.username,
-                      userId: user._id
-                    },                    
+                  {
+                    username: user.username,
+                    userId: user._id,
                     playlist: playlist
                   }
                 );
@@ -171,6 +169,20 @@ usersRouter
     });
     
     
+ usersRouter
+  .route('/login/:token')
+  
+  .get(passport.authenticate('basic', { session: false }), (req, res) => {
+    User.findOne({token: req.params.token})
+      .then(user =>
+      Playlist.find({userId: user._id}).then(playlist => {
+          return res.json({user:userResponse(user), playlist: playlist});
+        })
+      .catch(err => res.sendStatus(500))
+      )
+    }
+  )
+  
 passport.use(
     new BearerStrategy(
         function(accessToken, done) {
