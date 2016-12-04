@@ -586,7 +586,7 @@ message
 
 ___Send Example:___
 ```
-> DELETE /api/v1/playlists/:playlistId?access_token=gfhgfhghghghd
+> DELETE /api/v1/playlists/:userId/:playlistId?access_token=gfhgfhghghghd
 
 ```
 ___Response Example:___

@@ -35,7 +35,6 @@ playlistsRouter
 playlistsRouter
   .route('/:userId')
   
-
   .post(passport.authenticate('bearer', {session: false}), 
     (req, res) => {
       User.findOne({_id: req.params.userId})
@@ -94,7 +93,10 @@ playlistsRouter
             {new: true}
           )
           .then(playlist => {
-            return res.status(200).json(playlist);
+             Playlist.find({userId: req.params.userId})
+                .then(playlist => {
+                    return res.json(playlist);
+                });
           });
         } else {
             return res.status(400).json({message:'You\'re not authorized to modify this playlist'});
@@ -115,14 +117,17 @@ playlistsRouter
         if (playlist.userId.toString() === req.params.userId.toString()) {
           Playlist.findByIdAndRemove(req.params.playlistId)
             .then(playlist => {
-            return res.json({message: "The playlist is successfully deleted."});
-          });
-         }
-         else{
-           return res.json({message: "You are not authorized to delete this playlist"});
-         }
-     });
-   });
+              Playlist.find({userId: req.params.userId})
+                .then(playlist => {
+                    return res.json(playlist);
+                });
+            });
+        }
+        else{
+          return res.json({message: "You are not authorized to delete this playlist"});
+        }
+      });
+  });
 
 
 export default playlistsRouter;
