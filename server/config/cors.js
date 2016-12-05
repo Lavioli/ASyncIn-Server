@@ -1,4 +1,4 @@
-const whitelist = ['https://lavioli.github.io','https://asyncin-client-surbi.c9users.io', 'http://localhost:3000', 'http://localhost:8080'];
+const whitelist = ['http://localhost:3000', 'http://localhost:8080', 'https://lavioli.github.io', 'https://asyncin-client-surbi.c9users.io', 'https://async-server-surbi.c9users.io/', 'https://async-client-kl012.c9users.io', 'https://asyncin-server-kl012.c9users.io/'];
 
 module.exports = (req, res, next) => {
     let allowCORS = false;
