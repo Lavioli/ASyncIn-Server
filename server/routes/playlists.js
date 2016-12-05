@@ -46,7 +46,9 @@ playlistsRouter
     }
   )
 
-
+playlistsRouter
+  .route('/:userId')
+  
   .post(passport.authenticate('bearer', {session: false}), 
     (req, res) => {
       User.findOne({_id: req.params.userId})
