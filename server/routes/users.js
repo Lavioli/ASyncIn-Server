@@ -21,11 +21,7 @@ usersRouter
   .get(passport.authenticate('bearer', {session: false}), (req, res) => {
     User.find({},'username token _id favouritePlaylists')
       .then(users => {
-        Playlist.find({userId: users._id}).then(playlist => {
-            return res.json(
-              {user:users, playlist: playlist}
-            );
-          });
+            return res.json(users);
       }
       )
       .catch(err => res.sendStatus(500));
@@ -44,9 +40,13 @@ usersRouter
     )
       .then(user => {
         res.set('Location', `/api/v1/users/${user.username}`);
-        return res.status(201).json(
-          {user:userResponse(user),playlist: []}
-        );
+        Playlist.find({ _id: { $in: user.favouritePlaylists }}).then(favouritePlaylist =>{ 
+                return res.status(201).json({user:{ username:user.username, 
+                  token: user.token, 
+                  accessToken: user.accessToken, 
+                  userId: user._id,
+                  favouritePlaylists: favouritePlaylist}, playlist: []});
+            })
       })
       .catch(err => {
         console.error(err);
@@ -72,9 +72,15 @@ usersRouter
       )
       .then(user => {
           if (!user) return res.status(404).json({message: 'User not found.'});
-          return res.json(
-            {user:userResponse(user)}
-          );
+          
+            Playlist.find({ _id: { $in: user.favouritePlaylists }}).then(favouritePlaylist =>{ 
+                return res.json({ username:user.username, 
+                  token: user.token, 
+                  accessToken: user.accessToken, 
+                  userId: user._id,
+                  favouritePlaylists: favouritePlaylist});
+            })
+         
       })
       .catch(() => res.sendStatus(500));
     }
@@ -114,9 +120,13 @@ usersRouter
         if (!user) return res.status(404).json({ message: 'User not found' });
         if (req.query.access_token === user.accessToken){
           Playlist.find({userId: user._id}).then(playlist => {
-            return res.json(
-              {user:userResponse(user), playlist: playlist}
-            );
+             Playlist.find({ _id: { $in: user.favouritePlaylists }}).then(favouritePlaylist =>{ 
+                return res.json({user:{ username:user.username, 
+                  token: user.token, 
+                  accessToken: user.accessToken, 
+                  userId: user._id,
+                  favouritePlaylists: favouritePlaylist}, playlist: playlist});
+            })
           });
         } else {
           //The else statement runs when an user checks out another user's playlist
@@ -125,7 +135,7 @@ usersRouter
                 return res.json(
                   {
                     username: user.username,
-                    userId: user._id,
+                    userId: user._id ,
                     playlist: playlist
                   }
                 );
@@ -151,8 +161,13 @@ usersRouter
               .then(user => {
                 Playlist.findOneAndUpdate({_id:req.body.playlistId},{rating: newRating},{ new: true })
                   .then(playlist =>{
-                   
-                return res.status(200).json({user:userResponse(user),playlist:playlist});
+                      Playlist.find({ _id: { $in: user.favouritePlaylists }}).then(favouritePlaylist =>{ 
+                          return res.json({user:{ username:user.username, 
+                          token: user.token, 
+                          accessToken: user.accessToken, 
+                          userId: user._id,
+                          favouritePlaylists: favouritePlaylist}, playlist: playlist});
+                      })
                 });
               });
             }else{
@@ -165,7 +180,13 @@ usersRouter
              .then(user => {
                Playlist.findOneAndUpdate({_id:req.body.playlistId},{rating: newRating},{ new: true })
                   .then(playlist =>{
-                     return res.status(200).json({user:userResponse(user), playlist:playlist});
+                      Playlist.find({ _id: { $in: user.favouritePlaylists }}).then(favouritePlaylist =>{ 
+                        return res.json({user:{ username:user.username, 
+                          token: user.token, 
+                          accessToken: user.accessToken, 
+                          userId: user._id,
+                          favouritePlaylists: favouritePlaylist}, playlist: playlist});
+                      })
                  });
              });
             }
@@ -179,14 +200,23 @@ usersRouter
   
   .get(passport.authenticate('basic', { session: false }), (req, res) => {
     User.findOne({token: req.params.token})
-      .then(user =>
-      Playlist.find({userId: user._id}).then(playlist => {
-          return res.json({user:userResponse(user), playlist: playlist});
+      .then(user => {
+      
+        Playlist.find({userId: user._id}).then(playlist =>{  
+          Playlist.find({ _id: { $in: user.favouritePlaylists }}).then(favouritePlaylist =>{ 
+           return res.json({user:{ username:user.username, 
+                    token: user.token, 
+                  accessToken: user.accessToken, 
+                  userId: user._id,
+                  favouritePlaylists: favouritePlaylist}, playlist: playlist});
+          })
+            
         })
-      .catch(err => res.sendStatus(500))
-      );
-    }
-  );
+      })
+        .catch(err => res.sendStatus(500));
+      
+    });    
+    
   
 passport.use(
     new BearerStrategy(

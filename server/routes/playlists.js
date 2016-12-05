@@ -33,8 +33,20 @@ playlistsRouter
 
 
 playlistsRouter
-  .route('/:userId')
+  .route('/profile/:userId')
   
+  .get(passport.authenticate('bearer', {session: false}), 
+    (req, res) => {
+      Playlist.findOne({userId: req.params.userId})
+     .then(playlist => {
+       return res.json(playlist)
+     }
+      )
+      .catch(err => res.sendStatus(500));
+    }
+  )
+
+
   .post(passport.authenticate('bearer', {session: false}), 
     (req, res) => {
       User.findOne({_id: req.params.userId})
