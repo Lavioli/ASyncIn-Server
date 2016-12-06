@@ -68,7 +68,7 @@ usersRouter
         })
         .catch(() => res.sendStatus(500));
     }
-    if (req.body.newPassword) {
+    if (req.body.newPassword)   {
       User.findOne({ accessToken: req.query.access_token },
         (err, user) => {
           bcrypt.genSalt(10, (err, salt) => {
@@ -97,152 +97,137 @@ usersRouter
 
 
 usersRouter
-    .route('/:token')
-
-.get(passport.authenticate('bearer', { session: false }), (req, res) => {
-    User.findOne({ token: req.params.token })
-        .then(user => {
-            if (!user) return res.status(404).json({ message: 'User not found' });
-            if (req.query.access_token === user.accessToken) {
-                Playlist.find({ userId: user._id }).then(playlist => {
-                    return res.json({ user: userResponse(user), playlist: playlist });
-                });
-            } else {
-                //The else statement runs when an user checks out another user's playlist
-                Playlist.find({ userId: user._id, isPublic: true })
-                    .then(playlist => {
-                        return res.json({
-                            username: user.username,
-                            userId: user._id,
-                            playlist: playlist
-                        });
-                    });
-            }
-        })
-        .catch(err => res.sendStatus(500));
-})
-
-//when user selects a playlist to be added or to be deleted from his fouritePlaylist array
-//playlist id and rating should be supplied in req.body
-.put(passport.authenticate('bearer', { session: false }), (req, res) => {
-    User.findOne({ token: req.params.token })
-        .then(user => {
-            if (!user) return res.status(404).json({ message: 'User not found' });
-            if (user.favouritePlaylists.indexOf(req.body.playlistId) === -1 && (req.body.rating)) {
-                let newRating = req.body.rating + 1;
-                const newFavouritePlaylist = user.favouritePlaylists;
-                newFavouritePlaylist.push(req.body.playlistId);
-                User.findOneAndUpdate({ token: req.params.token }, { favouritePlaylists: newFavouritePlaylist }, { new: true })
-                    .then(user => {
-                        Playlist.findOneAndUpdate({ _id: req.body.playlistId }, { rating: newRating }, { new: true })
-                            .then(playlist => {
-                                return res.status(200).json({ user: userResponse(user), playlist: playlist });
-                            });
-                    });
-            } else {
-                let newRating = req.body.rating - 1;
-                const newFavouritePlaylist = user.favouritePlaylists;
-                newFavouritePlaylist.splice(user.favouritePlaylists.indexOf(req.body.playlistId), 1);
-                User.findOneAndUpdate({ token: req.params.token }, { favouritePlaylists: newFavouritePlaylist }, { new: true })
-                    .then(user => {
-                        Playlist.findOneAndUpdate({ _id: req.body.playlistId }, { rating: newRating }, { new: true })
-                            .then(playlist => {
-                                return res.status(200).json({ user: userResponse(user), playlist: playlist });
-                            });
-                    });
-            }
-        })
-        .catch(err => res.sendStatus(500));
-});
-
-
-usersRouter
-    .route('/login/:token')
-
-.get(passport.authenticate('basic', { session: false }), (req, res) => {
-    User.findOne({ token: req.params.token })
-        .then(user => {
-            Playlist.find({ userId: user._id }).then(playlist => {
-                return res.json({ user: userResponse(user), playlist: playlist });
-            })
-        })
-        .catch(err => res.sendStatus(500));
-});
-
-
-usersRouter
-    .route('/favouriteplaylists/:userId')
-    .put(passport.authenticate('bearer', { session: false }), (req, res) => {
-        console.log(req.body.playlistId);
-        let playlistId = req.body.playlistId;
-        User.findByIdAndUpdate(
-            req.params.userId, { $push: { favouritePlaylists: req.body.playlistId } }, { safe: true, upsert: true },
-            (err, user) => {
-                res.json(user);
-            }
+  .route('/:token')
+  .get(passport.authenticate('bearer', { session: false }), (req, res) => {
+    User.findOne(
+      { token: req.params.token }
+    )
+    .then(user => {
+      if (!user) return res.status(404).json({ message: 'User not found' });
+      if (req.query.access_token === user.accessToken) {
+          Playlist.find({ userId: user._id }).then(playlist => {
+              return res.json({ user: userResponse(user), playlist: playlist });
+          });
+      } else {
+        //The else statement runs when an user checks out another user's playlist
+        Playlist.find(
+          { userId: user._id, isPublic: true }
         )
-
-        User.findOne({ _id: req.params.userId }).exec((err, user) => {
-            User.populate(user, 'favouritePlaylists.playlistId', (err, user) => {
-                console.log(user)
-            })
-        })
-
-        // .then(user => {
-        //   console.log(user)
-        // });
+        .then(playlist => {
+            return res.json({
+                username: user.username,
+                userId: user._id,
+                playlist: playlist
+            });
+        });
+      }
     })
+    .catch(err => res.sendStatus(500));
+  })
 
-.get(passport.authenticate('bearer', { session: false }), (req, res) => {
-    let playlistArr = [];
-    User.findOne({ _id: req.params.userId })
-        .then(user => {
-            let favouritePlaylistsArr = user.favouritePlaylists;
-            favouritePlaylistsArr.forEach((element) => {
-                Playlist.find({ _id: element }).then(playlist => {
-                    console.log(playlist);
-                    playlistArr.push({
-                        _id: playlist._id
-                    });
-                })
-            })
-            console.log(playlistArr);
-            // for(var i = 0; i < favouritePlaylistsArr.length; i++) {
-            //   Playlist.find({_id: favouritePlaylistsArr[i]}).then(playlist => {
-            //     playlistArr[i] = playlist;
-            //   })
-            // }
+  //when user selects a playlist to be added or to be deleted from his fouritePlaylist array
+  //playlist id and rating should be supplied in req.body
+  .put(passport.authenticate('bearer', { session: false }), (req, res) => {
+    User.findOne(
+      { token: req.params.token }
+    )
+    .then(user => {
+        if (!user) return res.status(404).json({ message: 'User not found' });
+        if (user.favouritePlaylists.indexOf(req.body.playlistId) === -1 && (req.body.rating)) {
+          let newRating = req.body.rating + 1;
+          const newFavouritePlaylist = user.favouritePlaylists;
+          newFavouritePlaylist.push(req.body.playlistId);
+          User.findOneAndUpdate(
+            { token: req.params.token }, 
+            { favouritePlaylists: newFavouritePlaylist }, 
+            { new: true }
+          )
+          .then(user => {
+            Playlist.findOneAndUpdate(
+              { _id: req.body.playlistId }, 
+              { rating: newRating }, 
+              { new: true }
+            )
+            .then(playlist => {
+              return res.status(200).json({ user: userResponse(user), playlist: playlist });
+            });
+          });
+        } else {
+          let newRating = req.body.rating - 1;
+          const newFavouritePlaylist = user.favouritePlaylists;
+          newFavouritePlaylist.splice(user.favouritePlaylists.indexOf(req.body.playlistId), 1);
+          User.findOneAndUpdate(
+            { token: req.params.token }, 
+            { favouritePlaylists: newFavouritePlaylist }, 
+            { new: true }
+          )
+          .then(user => {
+            Playlist.findOneAndUpdate(
+              { _id: req.body.playlistId }, 
+              { rating: newRating }, 
+              { new: true }
+            )
+            .then(playlist => {
+                return res.status(200).json({ user: userResponse(user), playlist: playlist });
+            });
+          });
+        }
+    })
+    .catch(err => res.sendStatus(500));
+  });
 
-            // console.log(playlistArr);
-            // Playlist.find({userId: user._id}).then(playlist => {
-            //   return res.json({user:userResponse(user), playlist: playlist});
-            // })
-        })
-        .catch(err => res.sendStatus(500));
-})
 
-passport.use(
-    new BearerStrategy(
-        function(accessToken, done) {
-            User.findOne({
-                    accessToken: accessToken,
-                },
-                function(err, user) {
-                    console.log(user);
-                    if (err) {
-                        return done(err);
-                    }
-                    if (!user) {
-                        return done(null, false);
-                    }
+usersRouter
+  .route('/login/:token')
+  .get(passport.authenticate('basic', { session: false }), (req, res) => {
+    User.findOne(
+      { token: req.params.token }
+    )
+    .then(user => {
+      Playlist.find(
+        { userId: user._id }
+      )
+      .then(playlist => {
+        return res.json({ user: userResponse(user), playlist: playlist });
+      })
+    })
+    .catch(err => res.sendStatus(500));
+  });
 
-                    return done(null, user, {
-                        scope: 'all'
-                    });
-                }
-            );
+
+usersRouter
+  .route('/favouriteplaylists/:userId')
+  .put(passport.authenticate('bearer', { session: false }), (req, res) => {
+    let playlistId = req.body.playlistId;
+    User.findByIdAndUpdate(
+        req.params.userId, { $push: { favouritePlaylists: req.body.playlistId } }, { safe: true, upsert: true },
+        (err, user) => {
+            res.json(user);
         }
     )
+  })
+
+passport.use(
+  new BearerStrategy(
+    (accessToken, done) => {
+      User.findOne(
+        {
+          accessToken: accessToken,
+        },
+        (err, user) => {
+          if (err) {
+              return done(err);
+          }
+          if (!user) {
+              return done(null, false);
+          }
+          return done(null, user, {
+              scope: 'all'
+          });
+        }
+      );
+    }
+  )
 );
 
 
