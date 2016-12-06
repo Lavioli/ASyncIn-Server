@@ -68,8 +68,9 @@ googleRouter.get('/', passport.authenticate('google', {scope: ['https://www.goog
 googleRouter.get('/callback', passport.authenticate('google', {failureRedirect: '/login', session: false}),
 	function(req, res) {
 		//successful authentication, redirect home
-		var accessToken = req.user.accessToken;
-		var redirectLink = 'https://kevl927.github.io/ASyncIn-Client/#/dashboard?access_token=' + accessToken;
+		let accessToken = req.user.accessToken,
+		    token = req.user.token,
+		    redirectLink = 'https://kevl927.github.io/ASyncIn-Client/#/dashboard?access_token=' + accessToken + '&token=' + token;
 		res.redirect(redirectLink);
 	}
 );
