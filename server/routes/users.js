@@ -79,9 +79,9 @@ usersRouter
                     username:user.username, 
                     token: user.token, 
                     accessToken: user.accessToken, 
-                    userId: user._id
+                    userId: user._id,
+                    favouritePlaylists: favouritePlaylist
                   },
-                  favouritePlaylists: favouritePlaylist
                 });
             })
          
