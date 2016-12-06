@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 const whitelist = ['http://localhost:3000', 'http://localhost:8080', 'https://lavioli.github.io', 'https://asyncin-client-surbi.c9users.io', 'https://async-server-surbi.c9users.io', 'https://async-client-kl012.c9users.io', 'https://asyncin-server-kl012.c9users.io'];
+=======
+const whitelist = ['http://localhost:3000', 'http://localhost:8080', 'https://lavioli.github.io', 'https://kevl927.github.io/ASyncIn-Client', 'https://asyncin-client-surbi.c9users.io', 'https://async-server-surbi.c9users.io/', 'https://async-client-kl012.c9users.io', 'https://asyncin-server-kl012.c9users.io/'];
+>>>>>>> cors
 
 module.exports = (req, res, next) => {
     let allowCORS = false;
