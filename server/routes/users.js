@@ -50,50 +50,61 @@ usersRouter
 //Change username or password
 //If the user wants to change username,currentUsername and newUsername will be sent to us in JSON format and accessToken via query
 //If the user wants to change the password, current and new password will be sent to us in JSON format and accessToken via query
-  .put(passport.authenticate('bearer', { session: false }), (req, res) => {
-    if (req.body.currentUsername && req.body.newUsername) {
-      if (req.body.currentUsername === req.body.newUsername) {
-          return res.json({ message: 'New username is same as the current username.' });
+  .put(passport.authenticate('bearer', {session: false}), (req, res) => {
+      if(req.body.currentUsername && req.body.newUsername){
+        if(req.body.currentUsername === req.body.newUsername) {
+          return res.json({message: 'New username is same as the current username.'});
+        }
       }
-    }
-    if (req.body.newUsername) {
+      if(req.body.newUsername) {
         User.findOneAndUpdate(
-          { accessToken: req.query.access_token }, 
+          {accessToken: req.query.access_token},
           { username: req.body.newUsername }, 
           { new: true }
         )
         .then(user => {
-          if (!user) return res.status(404).json({ message: 'User not found.' });
-          return res.json(userResponse(user));
+            if (!user) return res.status(404).json({message: 'User not found.'});
+            
+              Playlist.find({ _id: { $in: [user.favouritePlaylists] }}).then(favouritePlaylist =>{
+                  return res.json({
+                    user: {
+                      username:user.username, 
+                      token: user.token, 
+                      accessToken: user.accessToken, 
+                      userId: user._id
+                    },
+                    favouritePlaylists: favouritePlaylist
+                  });
+              })
+           
         })
         .catch(() => res.sendStatus(500));
-    }
-    if (req.body.newPassword)   {
-      User.findOne({ accessToken: req.query.access_token },
-        (err, user) => {
-          bcrypt.genSalt(10, (err, salt) => {
-              bcrypt.hash(req.body.newPassword, salt,
-                  (err, hashNewPassword) => {
-                      User.findOneAndUpdate(
-                        { accessToken: req.query.access_token }, 
-                        { password: hashNewPassword }, 
-                        { new: true }
-                      )
-                      .then(user => {
-                        if (!user) return res.status(404).json({ message: 'User not found.' });
-                        return res.json({ message: 'Your password has been changed successfully.' });
-                      })
-                      .catch(() => res.sendStatus(500));
-                  }
+      }
+      if(req.body.newPassword) {
+        User.findOne({ accessToken: req.query.access_token },
+          function(err, user){ 
+            bcrypt.genSalt(10, (err, salt) => {
+              bcrypt.hash(req.body.newPassword, salt, 
+                (err, hashNewPassword) => {
+                  User.findOneAndUpdate(
+                    {accessToken: req.query.access_token}, 
+                    {password: hashNewPassword }, 
+                    {new: true}
+                  )
+                  .then(user => {
+                    if (!user) return res.status(404).json({ message: 'User not found.' });
+                      return res.json({message: 'Your password has been changed successfully.'});
+                  })
+                  .catch(() => res.sendStatus(500));
+                }
               );
-          });
-        }
-      );
-    }
-    if (!req.body.newUsername && !req.body.newPassword) {
+            });
+        });
+      }
+     if(!req.body.newUsername && !req.body.newPassword) {
         return res.status(404).json({ message: 'Invalid input' });
-    }
-  });
+     }
+    });
 
 
 usersRouter
