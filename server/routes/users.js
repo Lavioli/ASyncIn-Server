@@ -74,6 +74,7 @@ usersRouter
           if (!user) return res.status(404).json({message: 'User not found.'});
           
             Playlist.find({ _id: { $in: [user.favouritePlaylists] }}).then(favouritePlaylist =>{
+                let newFavouritePlaylistArr = new Array(favouritePlaylist);
                 return res.json({
                   user: {
                     username:user.username, 
@@ -81,7 +82,7 @@ usersRouter
                     accessToken: user.accessToken, 
                     userId: user._id
                   },
-                  favouritePlaylists: favouritePlaylist
+                  favouritePlaylists: newFavouritePlaylistArr
                 });
             })
          
