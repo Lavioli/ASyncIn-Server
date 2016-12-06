@@ -118,7 +118,13 @@ usersRouter
       if (!user) return res.status(404).json({ message: 'User not found' });
       if (req.query.access_token === user.accessToken) {
           Playlist.find({ userId: user._id }).sort({createdDate: 'desc'}).then(playlist => {
-              return res.json({ user: userResponse(user), playlist: playlist });
+              Playlist.find({ _id: { $in: user.favouritePlaylists }}).then(favouritePlaylist =>{ 
+                 return res.json({user:{ username:user.username, 
+                   token: user.token, 
+                   accessToken: user.accessToken, 
+                   userId: user._id,
+                   favouritePlaylists: favouritePlaylist}, playlist: playlist});
+             })
           });
       } else {
         //The else statement runs when an user checks out another user's playlist
