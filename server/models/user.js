@@ -26,9 +26,8 @@ const UserSchema = new mongoose.Schema({
   favouritePlaylists: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Playlist',
-      required: false
-    } 
+      ref: 'Playlists'
+    }
   ]
 });
 
