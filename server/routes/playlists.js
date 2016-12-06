@@ -73,6 +73,7 @@ playlistsRouter
               userId: req.body.userId
             }
           )
+          .sort({createdDate: 'desc'})
           .then(playlists => {
             for(var i=0; i<playlists.length ; i++) {
               if(playlists[i].name === req.body.name) {
@@ -112,6 +113,7 @@ playlistsRouter
             userId: req.body.userId
           }
         )
+        .sort({createdDate: 'desc'})
         .then(playlists => {
           for(var i=0; i<playlists.length ; i++) {
             if(playlists[i].name === req.body.name) {
@@ -137,6 +139,7 @@ playlistsRouter
               userId: req.params.userId
             }
           )
+          .sort({createdDate: 'desc'})
           .then(playlist => {
             return res.json(playlist);
           });
@@ -170,6 +173,7 @@ playlistsRouter
             Playlist.find(
               {userId: req.params.userId}
             )
+            .sort({createdDate: 'desc'})
             .then(playlist => {
               return res.json(playlist);
             });

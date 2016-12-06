@@ -105,7 +105,7 @@ usersRouter
     .then(user => {
       if (!user) return res.status(404).json({ message: 'User not found' });
       if (req.query.access_token === user.accessToken) {
-          Playlist.find({ userId: user._id }).then(playlist => {
+          Playlist.find({ userId: user._id }).sort({createdDate: 'desc'}).then(playlist => {
               return res.json({ user: userResponse(user), playlist: playlist });
           });
       } else {
@@ -113,6 +113,7 @@ usersRouter
         Playlist.find(
           { userId: user._id, isPublic: true }
         )
+        .sort({createdDate: 'desc'})
         .then(playlist => {
             return res.json({
                 username: user.username,
@@ -148,6 +149,7 @@ usersRouter
               { rating: newRating }, 
               { new: true }
             )
+            .sort({createdDate: 'desc'})
             .then(playlist => {
               return res.status(200).json({ user: userResponse(user), playlist: playlist });
             });
@@ -167,6 +169,7 @@ usersRouter
               { rating: newRating }, 
               { new: true }
             )
+            .sort({createdDate: 'desc'})
             .then(playlist => {
                 return res.status(200).json({ user: userResponse(user), playlist: playlist });
             });
@@ -187,6 +190,7 @@ usersRouter
       Playlist.find(
         { userId: user._id }
       )
+      .sort({createdDate: 'desc'})
       .then(playlist => {
         return res.json({ user: userResponse(user), playlist: playlist });
       })
