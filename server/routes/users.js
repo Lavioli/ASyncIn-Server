@@ -144,7 +144,7 @@ usersRouter
     .catch(err => res.sendStatus(500));
   })
 
-  //when user selects a playlist to be added or to be deleted from his fouritePlaylist array
+  //when user selects a playlist to be added or to be deleted from his favouritePlaylist array
   //playlist id and rating should be supplied in req.body
   .put(passport.authenticate('bearer', { session: false }), (req, res) => {
     User.findOne(
@@ -169,7 +169,13 @@ usersRouter
             )
             .sort({createdDate: 'desc'})
             .then(playlist => {
-              return res.status(200).json({ user: userResponse(user), playlist: playlist });
+              Playlist.find({ _id: { $in: user.favouritePlaylists }}).then(favouritePlaylist =>{ 
+                         return res.json({user:{ username:user.username, 
+                           token: user.token, 
+                           accessToken: user.accessToken, 
+                           userId: user._id,
+                           favouritePlaylists: favouritePlaylist}, playlist: playlist});
+                       })
             });
           });
         } else {
@@ -189,7 +195,13 @@ usersRouter
             )
             .sort({createdDate: 'desc'})
             .then(playlist => {
-                return res.status(200).json({ user: userResponse(user), playlist: playlist });
+                Playlist.find({ _id: { $in: user.favouritePlaylists }}).then(favouritePlaylist =>{ 
+                         return res.json({user:{ username:user.username, 
+                           token: user.token, 
+                           accessToken: user.accessToken, 
+                           userId: user._id,
+                           favouritePlaylists: favouritePlaylist}, playlist: playlist});
+                      })
             });
           });
         }
