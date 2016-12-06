@@ -59,7 +59,8 @@ facebookRouter.get('/callback',
   passport.authenticate('facebook', { session: false, failureRedirect: "/login" }),
   function(req, res) {
     var accessToken = req.user.accessToken;
-    res.redirect("https://asyncin-client-surbi.c9users.io/home?access_token=" + accessToken);
+    var redirectLink = 'https://lavioli.github.io/ASyncIn-Client/welcome?access_token=' + accessToken;
+		res.redirect(redirectLink);
   }
 );
 

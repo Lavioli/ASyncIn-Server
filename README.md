@@ -135,7 +135,6 @@ ___Response Example:___
 }
 ```
 
-##``/api/v1/users``
 Endpoint representing 
 #####`GET /api/v1/users`
 ___URL Parameters:___
