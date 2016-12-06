@@ -216,19 +216,6 @@ usersRouter
     .catch(err => res.sendStatus(500));
   });
 
-
-usersRouter
-  .route('/favouriteplaylists/:userId')
-  .put(passport.authenticate('bearer', { session: false }), (req, res) => {
-    let playlistId = req.body.playlistId;
-    User.findByIdAndUpdate(
-        req.params.userId, { $push: { favouritePlaylists: req.body.playlistId } }, { safe: true, upsert: true },
-        (err, user) => {
-            res.json(user);
-        }
-    )
-  })
-
 passport.use(
   new BearerStrategy(
     (accessToken, done) => {
