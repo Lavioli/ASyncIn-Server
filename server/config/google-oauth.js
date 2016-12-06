@@ -69,7 +69,7 @@ googleRouter.get('/callback', passport.authenticate('google', {failureRedirect: 
 	function(req, res) {
 		//successful authentication, redirect home
 		var accessToken = req.user.accessToken;
-		var redirectLink = 'https://lavioli.github.io/ASyncIn-Client/welcome?access_token=' + accessToken;
+		var redirectLink = 'https://lavioli.github.io/ASyncIn-Client/dashboard?access_token=' + accessToken;
 		res.redirect(redirectLink);
 	}
 );

@@ -38,7 +38,13 @@ usersRouter
     )
     .then(user => {
         res.set('Location', `/api/v1/users/${user.username}`);
-        return res.status(201).json({ user: userResponse(user), playlist: [] });
+        Playlist.find({ _id: { $in: user.favouritePlaylists }}).then(favouritePlaylist =>{ 
+             return res.status(201).json({user:{ username:user.username, 
+                 token: user.token, 
+                 accessToken: user.accessToken, 
+                 userId: user._id,
+                favouritePlaylists: favouritePlaylist}, playlist: []});
+             })
     })
     .catch(err => {
         console.error(err);
