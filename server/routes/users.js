@@ -209,10 +209,10 @@ usersRouter
     .catch(err => res.sendStatus(500));
   });
 
-
 usersRouter
-  .route('/login/:token')
-  .get(passport.authenticate('basic', { session: false }), (req, res) => {
+  .route('/login_success/:token')
+  
+ .get(passport.authenticate('bearer', { session: false }), (req, res) => {
     User.findOne(
       { token: req.params.token }
     )
@@ -222,8 +222,26 @@ usersRouter
       )
       .sort({createdDate: 'desc'})
       .then(playlist => {
-        return res.json({ user: userResponse(user), playlist: playlist });
+       Playlist.find({ _id: { $in: user.favouritePlaylists }}).then(favouritePlaylist =>{ 
+                         return res.json({user:{ username:user.username, 
+                           token: user.token, 
+                           accessToken: user.accessToken, 
+                           userId: user._id,
+                           favouritePlaylists: favouritePlaylist}, playlist: playlist});
+                      })
       })
+    })
+    .catch(err => res.sendStatus(500));
+  });
+
+usersRouter
+  .route('/login/:token')
+  .get(passport.authenticate('basic', { session: false }), (req, res) => {
+    User.findOne(
+      { token: req.params.token }
+    )
+    .then(user => {
+        return res.redirect('https://kevl927.github.io/ASyncIn-Client/#/dashboard?access_token=' + user.accessToken + '&token=' + user.token);
     })
     .catch(err => res.sendStatus(500));
   });
