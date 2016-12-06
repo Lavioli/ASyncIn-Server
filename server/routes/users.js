@@ -75,13 +75,11 @@ usersRouter
           
             Playlist.find({ _id: { $in: [user.favouritePlaylists] }}).then(favouritePlaylist =>{
                 return res.json({
-                  user: {
-                    username:user.username, 
-                    token: user.token, 
-                    accessToken: user.accessToken, 
-                    userId: user._id,
-                    favouritePlaylists: favouritePlaylist
-                  },
+                  username:user.username, 
+                  token: user.token, 
+                  accessToken: user.accessToken, 
+                  userId: user._id,
+                  favouritePlaylists: favouritePlaylist
                 });
             })
          
