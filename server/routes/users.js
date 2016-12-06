@@ -73,7 +73,7 @@ usersRouter
       .then(user => {
           if (!user) return res.status(404).json({message: 'User not found.'});
           
-            Playlist.find({ _id: { $in: user.favouritePlaylists }}).then(favouritePlaylist =>{
+            Playlist.find({ _id: { $in: [user.favouritePlaylists] }}).then(favouritePlaylist =>{
                 return res.json({
                   user: {
                     username:user.username, 
