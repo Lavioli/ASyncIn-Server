@@ -19,7 +19,7 @@ usersRouter
   .route('/')
 
   .get(passport.authenticate('bearer', {session: false}), (req, res) => {
-    User.find({},'username token _id favouritePlaylists')
+    User.find({},'username accessToken token _id favouritePlaylists')
       .then(users => {
             return res.json(users);
       }
