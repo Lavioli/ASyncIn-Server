@@ -58,9 +58,10 @@ facebookRouter.get(
 facebookRouter.get('/callback',
   passport.authenticate('facebook', { session: false, failureRedirect: "/login" }),
   function(req, res) {
-    var accessToken = req.user.accessToken;
-    var redirectLink = 'https://kevl927.github.io/ASyncIn-Client/#/dashboard?access_token=' + accessToken;
-		res.redirect(redirectLink);
+    let accessToken = req.user.accessToken,
+        token = req.user.token,
+        redirectLink = 'https://kevl927.github.io/ASyncIn-Client/#/dashboard?access_token=' + accessToken + '&token=' + token;
+	res.redirect(redirectLink);
   }
 );
 
