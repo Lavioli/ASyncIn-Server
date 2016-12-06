@@ -45,7 +45,7 @@ usersRouter
                   token: user.token, 
                   accessToken: user.accessToken, 
                   userId: user._id,
-                  favouritePlaylists: JSON.stringify(favouritePlaylist)}, playlist: []});
+                  favouritePlaylists: favouritePlaylist}, playlist: []});
             })
       })
       .catch(err => {
@@ -78,7 +78,7 @@ usersRouter
                   token: user.token, 
                   accessToken: user.accessToken, 
                   userId: user._id,
-                  favouritePlaylists: favouritePlaylist});
+                  favouritePlaylists: JSON.stringify(favouritePlaylist)});
             })
          
       })
