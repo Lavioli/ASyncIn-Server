@@ -78,7 +78,7 @@ usersRouter
                   token: user.token, 
                   accessToken: user.accessToken, 
                   userId: user._id,
-                  favouritePlaylists: JSON.stringify(favouritePlaylist)});
+                  favouritePlaylists: {fav: favouritePlaylist}});
             })
          
       })
