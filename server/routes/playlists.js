@@ -108,42 +108,29 @@ playlistsRouter
       )
       .then(user => {
         if(user.accessToken === req.query.access_token && user._id.toString() === req.body.userId.toString()) {
-        Playlist.find(
-          {
-            userId: req.body.userId
-          }
-        )
-        .sort({createdDate: 'desc'})
-        .then(playlists => {
-          for(var i=0; i<playlists.length ; i++) {
-            if(playlists[i].name === req.body.name) {
-              return res.status(400).json({message: "This playlist name already exists"});
-            }
-          }
-        });
-        Playlist.findOneAndUpdate(
-          {
-            _id: req.params.playlistId
-          }, 
-          {
-            name: req.body.name, 
-            tracks: req.body.tracks, 
-            rating: req.body.rating, 
-            isPublic: req.body.isPublic
-          }, 
-          {new: true}
-        )
-        .then(playlist => {
-          Playlist.find(
+          Playlist.findOneAndUpdate(
             {
-              userId: req.params.userId
-            }
+              _id: req.params.playlistId
+            }, 
+            {
+              name: req.body.name, 
+              tracks: req.body.tracks, 
+              rating: req.body.rating, 
+              isPublic: req.body.isPublic
+            }, 
+            {new: true}
           )
-          .sort({createdDate: 'desc'})
           .then(playlist => {
-            return res.json(playlist);
+            Playlist.find(
+              {
+                userId: req.params.userId
+              }
+            )
+            .sort({createdDate: 'desc'})
+            .then(playlist => {
+              return res.json(playlist);
+            });
           });
-        });
         } else {
             return res.status(400).json({message:'You\'re not authorized to modify this playlist'});
         }
