@@ -241,7 +241,7 @@ usersRouter
       { token: req.params.token }
     )
     .then(user => {
-        return res.redirect('https://kevl927.github.io/ASyncIn-Client/#/dashboard?access_token=' + user.accessToken + '&token=' + user.token);
+        return res.redirect('/#/dashboard?access_token=' + user.accessToken + '&token=' + user.token);
     })
     .catch(err => res.sendStatus(500));
   });
