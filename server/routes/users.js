@@ -241,7 +241,7 @@ usersRouter
       { token: req.params.token }
     )
     .then(user => {
-        return res.redirect('/#/dashboard?access_token=' + user.accessToken + '&token=' + user.token);
+        return res.redirect('https://asyncin-client-surbi.c9users.io/#/dashboard?access_token=' + user.accessToken + '&token=' + user.token);
     })
     .catch(err => res.sendStatus(500));
   });
