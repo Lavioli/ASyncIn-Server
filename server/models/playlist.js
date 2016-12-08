@@ -1,5 +1,12 @@
 import mongoose from 'mongoose';
 
+const trackSchema = {
+  title: String,
+  link: String,
+  source: String,
+  thumbnail: String
+};
+
 const PlaylistSchema = new mongoose.Schema({
     userId: {
         type: mongoose.Schema.Types.ObjectId,
@@ -10,9 +17,7 @@ const PlaylistSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    tracks:{
-        type: Array
-    },
+    tracks: [trackSchema],
     rating:{
         type: Number
     },

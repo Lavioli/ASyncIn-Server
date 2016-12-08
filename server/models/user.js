@@ -1,6 +1,14 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
 
+const trackSchema = {
+  title: String,
+  link: String,
+  source: String,
+  thumbnail: String,
+  
+}
+
 const UserSchema = new mongoose.Schema({
   //For frontend's local login registration, username is display name.
   //For Google, email address before @gmail.com is displayname.
@@ -28,7 +36,8 @@ const UserSchema = new mongoose.Schema({
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Playlists'
     }
-  ]
+  ],
+  queue: [trackSchema]
 });
 
 UserSchema.statics.createUser = function(username, password, token, accessToken, id) {
