@@ -247,6 +247,20 @@ usersRouter
     })
     .catch(err => res.sendStatus(500));
   });
+  
+  
+  usersRouter
+  .route('/queue/:token')
+  .put(passport.authenticate('bearer', { session: false }), (req, res) => {
+    User.findOneAndUpdate(
+      { token: req.params.token },
+      {queue: req.body.queue},{new:true}
+    )
+    .then(user => {
+        return res.json(user.queue);
+    })
+    .catch(err => res.sendStatus(500));
+  });
 
 passport.use(
   new BearerStrategy(
