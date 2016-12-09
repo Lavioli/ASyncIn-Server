@@ -13,7 +13,8 @@ function userResponse(user) {
       token: user.token,
       accessToken: user.accessToken,
       userId: user._id,
-      favouritePlaylists: user.favouritePlaylists
+      favouritePlaylists: user.favouritePlaylists,
+      queue: user.queue
   };
 }
 
