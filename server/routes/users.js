@@ -246,8 +246,10 @@ usersRouter
 usersRouter
   .route('/login/:token')
   .get(passport.authenticate('basic', { session: false }), (req, res) => {
-    User.findOne(
-      { token: req.params.token }
+    User.findOneAndUpdate(
+      { token: req.params.token },
+      { accessToken: tokenGenerator(34) },
+      { new: true }
     )
     .then(user => {
         return res.json({access_token: user.accessToken,
