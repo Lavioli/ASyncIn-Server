@@ -5,18 +5,9 @@ import { Strategy as BearerStrategy } from 'passport-http-bearer';
 import tokenGenerator from '../config/tokenGenerator';
 import User from '../models/user';
 import Playlist from '../models/playlist';
+import userResponse from './userResponseFunc';
 const usersRouter = express.Router();
 
-function userResponse(user) {
-  return {
-      username: user.username,
-      token: user.token,
-      accessToken: user.accessToken,
-      userId: user._id,
-      favouritePlaylists: user.favouritePlaylists,
-      queue: user.queue
-  };
-}
 
 usersRouter
   .route('/')
@@ -45,8 +36,7 @@ usersRouter
                  accessToken: user.accessToken, 
                  userId: user._id,
                  queue: user.queue,
-                 currentPlayingIndexInQueue: user.currentPlayingIndexInQueue,
-                favouritePlaylists: favouritePlaylist}, playlist: []});
+                 favouritePlaylists: favouritePlaylist}, playlist: []});
              })
     })
     .catch(err => {
@@ -81,7 +71,6 @@ usersRouter
                    accessToken: user.accessToken, 
                    userId: user._id,
                    queue: user.queue,
-                   currentPlayingIndexInQueue: user.currentPlayingIndexInQueue,
                    favouritePlaylists: favouritePlaylist});
              })
         })
@@ -124,14 +113,18 @@ usersRouter
       if (!user) return res.status(404).json({ message: 'User not found' });
       if (req.query.access_token === user.accessToken) {
           Playlist.find({ userId: user._id }).sort({createdDate: 'desc'}).then(playlist => {
-              Playlist.find({ _id: { $in: user.favouritePlaylists }}).then(favouritePlaylist =>{ 
-                 return res.json({user:{ username:user.username, 
-                   token: user.token, 
-                   accessToken: user.accessToken, 
-                   userId: user._id,                 
-                   queue: user.queue,
-                   currentPlayingIndexInQueue: user.currentPlayingIndexInQueue,
-                   favouritePlaylists: favouritePlaylist}, playlist: playlist});
+              Playlist.find({ _id: { $in: user.favouritePlaylists }})
+              .then(favouritePlaylist =>{
+                 return res.json({
+                    user:{ 
+                    username:user.username, 
+                    token: user.token, 
+                    accessToken: user.accessToken, 
+                    userId: user._id,                 
+                    queue: user.queue,
+                    favouritePlaylists: favouritePlaylist
+                    }, 
+                    playlist: playlist});
              })
           });
       } else {
@@ -177,15 +170,20 @@ usersRouter
             )
             .sort({createdDate: 'desc'})
             .then(playlist => {
-              Playlist.find({ _id: { $in: user.favouritePlaylists }}).then(favouritePlaylist =>{ 
-                         return res.json({user:{ username:user.username, 
-                           token: user.token, 
-                           accessToken: user.accessToken, 
-                           userId: user._id,
-                           queue: user.queue,
-                           currentPlayingIndexInQueue: user.currentPlayingIndexInQueue,
-                           favouritePlaylists: favouritePlaylist}, playlist: playlist});
-                       });
+              Playlist.find({ _id: { $in: user.favouritePlaylists }})
+              .then(favouritePlaylist =>{ 
+                         return res.json({
+                           user:{ 
+                             username:user.username, 
+                             token: user.token, 
+                             accessToken: user.accessToken, 
+                             userId: user._id,
+                             queue: user.queue,
+                             favouritePlaylists: favouritePlaylist
+                           },
+                             playlist: playlist
+                         });
+              });
             });
           });
         } else {
@@ -206,13 +204,15 @@ usersRouter
             .sort({createdDate: 'desc'})
             .then(playlist => {
                 Playlist.find({ _id: { $in: user.favouritePlaylists }}).then(favouritePlaylist =>{ 
-                         return res.json({user:{ username:user.username, 
+                         return res.json({
+                           user:{ 
+                           username:user.username, 
                            token: user.token, 
                            accessToken: user.accessToken, 
                            userId: user._id,
                            queue: user.queue,
-                           currentPlayingIndexInQueue: user.currentPlayingIndexInQueue,
-                           favouritePlaylists: favouritePlaylist}, playlist: playlist});
+                           favouritePlaylists: favouritePlaylist}, playlist: playlist
+                         });
                       })
             });
           });
@@ -244,7 +244,6 @@ usersRouter
                               accessToken: user.accessToken, 
                               userId: user._id,
                               queue: user.queue,
-                              currentPlayingIndexInQueue: user.currentPlayingIndexInQueue,
                               favouritePlaylists: favouritePlaylist,
                             }, 
                             playlist: playlist
@@ -288,19 +287,6 @@ usersRouter
     .catch(err => res.sendStatus(500));
   });
   
-usersRouter
-  .route('/playingqueue/:token')  
-  .put(passport.authenticate('bearer', { session: false }), (req, res) => {
-    User.findOneAndUpdate(
-      { token: req.params.token },
-      { currentPlayingIndexInQueue: req.body.currentPlayingIndexInQueue },
-      { new: true }
-    )
-    .then(user => {
-      return res.json({ currentPlayingIndexInQueue: user.currentPlayingIndexInQueue });
-    })
-    .catch(err => res.sendStatus(500));
-  });
 
 passport.use(
   new BearerStrategy(
