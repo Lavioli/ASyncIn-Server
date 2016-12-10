@@ -37,11 +37,14 @@ const UserSchema = new mongoose.Schema({
       ref: 'Playlists'
     }
   ],
-  queue: [trackSchema]
+  queue: [trackSchema],
+  currentPlayingIndexInQueue: {
+    type: Number
+  }
 });
 
 UserSchema.statics.createUser = function(username, password, token, accessToken, id) {
-  const newUser = { username:username, token:token, accessToken:accessToken};
+  const newUser = { username:username, token:token, accessToken:accessToken, currentPlayingIndexInQueue: 0 };
   if (id) newUser._id = id;
 
   return new Promise((res, rej) => {

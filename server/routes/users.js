@@ -44,6 +44,8 @@ usersRouter
                  token: user.token, 
                  accessToken: user.accessToken, 
                  userId: user._id,
+                 queue: user.queue,
+                 currentPlayingIndexInQueue: user.currentPlayingIndexInQueue,
                 favouritePlaylists: favouritePlaylist}, playlist: []});
              })
     })
@@ -73,10 +75,13 @@ usersRouter
             if (!user) return res.status(404).json({message: 'User not found.'});
             
               Playlist.find({ _id: { $in: [user.favouritePlaylists] }}).then(favouritePlaylist =>{
-                  return res.json({ username:user.username, 
+                  return res.json({
+                   username:user.username, 
                    token: user.token, 
                    accessToken: user.accessToken, 
                    userId: user._id,
+                   queue: user.queue,
+                   currentPlayingIndexInQueue: user.currentPlayingIndexInQueue,
                    favouritePlaylists: favouritePlaylist});
              })
         })
@@ -123,7 +128,9 @@ usersRouter
                  return res.json({user:{ username:user.username, 
                    token: user.token, 
                    accessToken: user.accessToken, 
-                   userId: user._id,
+                   userId: user._id,                 
+                   queue: user.queue,
+                   currentPlayingIndexInQueue: user.currentPlayingIndexInQueue,
                    favouritePlaylists: favouritePlaylist}, playlist: playlist});
              })
           });
@@ -175,8 +182,10 @@ usersRouter
                            token: user.token, 
                            accessToken: user.accessToken, 
                            userId: user._id,
+                           queue: user.queue,
+                           currentPlayingIndexInQueue: user.currentPlayingIndexInQueue,
                            favouritePlaylists: favouritePlaylist}, playlist: playlist});
-                       })
+                       });
             });
           });
         } else {
@@ -201,6 +210,8 @@ usersRouter
                            token: user.token, 
                            accessToken: user.accessToken, 
                            userId: user._id,
+                           queue: user.queue,
+                           currentPlayingIndexInQueue: user.currentPlayingIndexInQueue,
                            favouritePlaylists: favouritePlaylist}, playlist: playlist});
                       })
             });
@@ -232,8 +243,9 @@ usersRouter
                               token: user.token, 
                               accessToken: user.accessToken, 
                               userId: user._id,
+                              queue: user.queue,
+                              currentPlayingIndexInQueue: user.currentPlayingIndexInQueue,
                               favouritePlaylists: favouritePlaylist,
-                              queue: user.queue
                             }, 
                             playlist: playlist
                           });
@@ -252,9 +264,11 @@ usersRouter
       { new: true }
     )
     .then(user => {
-        return res.json({access_token: user.accessToken,
-                  token: user.token
-            });
+        return res.json
+                      ({
+                      access_token: user.accessToken,
+                      token: user.token
+                      });
     })
     .catch(err => res.sendStatus(500));
   });
@@ -265,10 +279,25 @@ usersRouter
   .put(passport.authenticate('bearer', { session: false }), (req, res) => {
     User.findOneAndUpdate(
       { token: req.params.token },
-      {queue: req.body.queue},{new:true}
+      { queue: req.body.queue },
+      {new:true}
     )
     .then(user => {
         return res.json(user.queue);
+    })
+    .catch(err => res.sendStatus(500));
+  });
+  
+usersRouter
+  .route('/playingqueue/:token')  
+  .put(passport.authenticate('bearer', { session: false }), (req, res) => {
+    User.findOneAndUpdate(
+      { token: req.params.token },
+      { currentPlayingIndexInQueue: req.body.currentPlayingIndexInQueue },
+      { new: true }
+    )
+    .then(user => {
+      return res.json({ currentPlayingIndexInQueue: user.currentPlayingIndexInQueue });
     })
     .catch(err => res.sendStatus(500));
   });
