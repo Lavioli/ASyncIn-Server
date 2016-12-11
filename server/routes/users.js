@@ -71,7 +71,6 @@ usersRouter
         )
         .then(user => {
             if (!user) return res.status(404).json({message: 'User not found.'});
-            
               Playlist.find({ _id: { $in: [user.favouritePlaylists] }}).then(favouritePlaylist =>{
                   return res.json({ username:user.username, 
                    token: user.token, 
@@ -82,9 +81,13 @@ usersRouter
         })
         .catch(() => res.sendStatus(500));
       }
-      if(req.body.newPassword) {
+      if(req.body.newPassword && req.body.oldPassword) {
         User.findOne({ accessToken: req.query.access_token },
           function(err, user){ 
+            bcrypt.compare(req.body.oldPassword, user.password, (err, isValid) => {
+              
+            if (!isValid) return res.json({message: 'Incorrect password'});
+            if (isValid){
             bcrypt.genSalt(10, (err, salt) => {
               bcrypt.hash(req.body.newPassword, salt, 
                 (err, hashNewPassword) => {
@@ -101,7 +104,9 @@ usersRouter
                 }
               );
             });
+          }
         });
+      });
       }
      if(!req.body.newUsername && !req.body.newPassword) {
         return res.status(404).json({ message: 'Invalid input' });
