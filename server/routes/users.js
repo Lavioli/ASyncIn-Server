@@ -7,16 +7,6 @@ import User from '../models/user';
 import Playlist from '../models/playlist';
 const usersRouter = express.Router();
 
-function userResponse(user) {
-  return {
-      username: user.username,
-      token: user.token,
-      accessToken: user.accessToken,
-      userId: user._id,
-      favouritePlaylists: user.favouritePlaylists,
-      queue: user.queue
-  };
-}
 
 usersRouter
   .route('/')
