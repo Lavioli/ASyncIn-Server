@@ -5,7 +5,6 @@ import { Strategy as BearerStrategy } from 'passport-http-bearer';
 import tokenGenerator from '../config/tokenGenerator';
 import User from '../models/user';
 import Playlist from '../models/playlist';
-import userResponse from './userResponseFunc';
 const usersRouter = express.Router();
 
 
@@ -53,32 +52,24 @@ usersRouter
       if(req.body.currentUsername && req.body.newUsername){
         if(req.body.currentUsername === req.body.newUsername) {
           return res.json({message: 'New username is same as the current username.'});
-        }
+        } else {
+            User.findOneAndUpdate(
+              { accessToken: req.query.access_token },
+              { username: req.body.newUsername }, 
+              { new: true }
+            )
+            .then(user => {
+                if (!user) return res.status(404).json({message: 'User not found.'});
+                     console.log('inside playlist user');
+                     return res.status(200).json({ username: user.username })
+            })
+            }
       }
-      if(req.body.newUsername) {
-        User.findOneAndUpdate(
-          {accessToken: req.query.access_token},
-          { username: req.body.newUsername }, 
-          { new: true }
-        )
-        .then(user => {
-            if (!user) return res.status(404).json({message: 'User not found.'});
-              Playlist.find({ _id: { $in: [user.favouritePlaylists] }}).then(favouritePlaylist =>{
-                  return res.json({
-                   username:user.username, 
-                   token: user.token, 
-                   accessToken: user.accessToken, 
-                   userId: user._id,
-                   queue: user.queue,
-                   favouritePlaylists: favouritePlaylist});
-             })
-        })
-        .catch(() => res.sendStatus(500));
-      }
-      if(req.body.newPassword && req.body.oldPassword) {
+      
+      if(req.body.newPassword && req.body.currentPassword) {
         User.findOne({ accessToken: req.query.access_token },
           function(err, user){ 
-            bcrypt.compare(req.body.oldPassword, user.password, (err, isValid) => {
+            bcrypt.compare(req.body.currentPassword, user.password, (err, isValid) => {
               
             if (!isValid) return res.json({message: 'Incorrect password'});
             if (isValid){
@@ -94,7 +85,6 @@ usersRouter
                     if (!user) return res.status(404).json({ message: 'User not found.' });
                       return res.json({message: 'Your password has been changed successfully.'});
                   })
-                  .catch(() => res.sendStatus(500));
                 }
               );
             });
@@ -102,9 +92,9 @@ usersRouter
         });
       });
       }
-     if(!req.body.newUsername && !req.body.newPassword) {
+      if((!req.body.currentUsername && !req.body.newUsername && !req.body.currentPassword && !req.body.newPassword) || (req.body.currentUsername && !req.body.newUsername) || (!req.body.currentUsername && req.body.newUsername) || (req.body.currentPassword && !req.body.newPassword) || (!req.body.currentPassword && req.body.newPassword)) {
         return res.status(404).json({ message: 'Invalid input' });
-     }
+      }
     });
 
 
