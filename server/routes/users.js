@@ -160,7 +160,7 @@ usersRouter
           .then(user => {
             Playlist.findOneAndUpdate(
               { _id: req.body.playlistId }, 
-              { rating: newRating }, 
+              { rating: newRating.toString() }, 
               { new: true }
             )
             .sort({createdDate: 'desc'})
@@ -181,7 +181,7 @@ usersRouter
             });
           });
         } else {
-          let newRating = req.body.rating - 1;
+          let newRating = parseInt(req.body.rating) - 1;
           const newFavouritePlaylist = user.favouritePlaylists;
           newFavouritePlaylist.splice(user.favouritePlaylists.indexOf(req.body.playlistId), 1);
           User.findOneAndUpdate(
@@ -192,7 +192,7 @@ usersRouter
           .then(user => {
             Playlist.findOneAndUpdate(
               { _id: req.body.playlistId }, 
-              { rating: newRating }, 
+              { rating: newRating.toString() }, 
               { new: true }
             )
             .sort({createdDate: 'desc'})

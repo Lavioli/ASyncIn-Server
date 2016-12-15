@@ -19,7 +19,7 @@ const PlaylistSchema = new mongoose.Schema({
     },
     tracks: [trackSchema],
     rating:{
-        type: Number
+        type: String
     },
     isPublic:{
         type: Boolean
