@@ -175,14 +175,13 @@ usersRouter
                              userId: user._id,
                              queue: user.queue,
                              favouritePlaylists: favouritePlaylist
-                           },
-                             playlist: playlist
+                           }
                          });
               });
             });
           });
         } else {
-          let newRating = req.body.rating - 1;
+          let newRating = req.body.rating;
           const newFavouritePlaylist = user.favouritePlaylists;
           newFavouritePlaylist.splice(user.favouritePlaylists.indexOf(req.body.playlistId), 1);
           User.findOneAndUpdate(
@@ -206,7 +205,7 @@ usersRouter
                            accessToken: user.accessToken, 
                            userId: user._id,
                            queue: user.queue,
-                           favouritePlaylists: favouritePlaylist}, playlist: playlist
+                           favouritePlaylists: favouritePlaylist}
                          });
                       })
             });
