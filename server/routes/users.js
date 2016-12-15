@@ -192,7 +192,7 @@ usersRouter
           .then(user => {
             Playlist.findOneAndUpdate(
               { _id: req.body.playlistId }, 
-              { rating: newRating.toString() }, 
+              { rating: newRating }, 
               { new: true }
             )
             .sort({createdDate: 'desc'})

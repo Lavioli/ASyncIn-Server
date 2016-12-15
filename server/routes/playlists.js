@@ -18,16 +18,9 @@ playlistsRouter
       ).sort(
         [['rating','desc']]
       )
-      .then(playlist => res.json({
-        userId: playlist.userId,
-        _id:playlist._id,
-        name: playlist.name,
-        tracks: playlist.tracks,
-        rating:playlist.rating.toString(),
-        isPublic: playlist.isPublic,
-        createdDate: playlist.createdDate
+      .then(playlist => {
+        return res.json(playlist)
       })
-      )
       .catch(err => res.sendStatus(500));
     }
   );
