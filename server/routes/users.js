@@ -181,7 +181,7 @@ usersRouter
             });
           });
         } else {
-          let newRating = req.body.rating;
+          let newRating = req.body.rating - 1;
           const newFavouritePlaylist = user.favouritePlaylists;
           newFavouritePlaylist.splice(user.favouritePlaylists.indexOf(req.body.playlistId), 1);
           User.findOneAndUpdate(
