@@ -19,7 +19,8 @@ playlistsRouter
         [['rating','desc']]
       )
       .then(playlist => res.json({
-        userId:playlist.userId,
+        userId: playlist.userId,
+        _id:playlist._id,
         name: playlist.name,
         tracks: playlist.tracks,
         rating:playlist.rating.toString(),
