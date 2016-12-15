@@ -149,7 +149,7 @@ usersRouter
     .then(user => {
         if (!user) return res.status(404).json({ message: 'User not found' });
         if (user.favouritePlaylists.indexOf(req.body.playlistId) === -1 && (req.body.rating)) {
-          let newRating = req.body.rating + 1;
+          let newRating = parseInt( req.body.rating) + 1;
           const newFavouritePlaylist = user.favouritePlaylists;
           newFavouritePlaylist.push(req.body.playlistId);
           User.findOneAndUpdate(
