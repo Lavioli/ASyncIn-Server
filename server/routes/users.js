@@ -39,6 +39,7 @@ usersRouter
              })
     })
     .catch(err => {
+        console.error(err);
         if (err.status === 400) return res.status(400).json({ message: err.message });
         return res.sendStatus(500);
     });
@@ -148,7 +149,7 @@ usersRouter
     .then(user => {
         if (!user) return res.status(404).json({ message: 'User not found' });
         if (user.favouritePlaylists.indexOf(req.body.playlistId) === -1 && (req.body.rating)) {
-          let newRating =  +req.body.rating + 1;
+          let newRating =  parseInt(req.body.rating) + 1;
           const newFavouritePlaylist = user.favouritePlaylists;
           newFavouritePlaylist.push(req.body.playlistId);
           User.findOneAndUpdate(
@@ -180,7 +181,7 @@ usersRouter
             });
           });
         } else {
-          let newRating = +req.body.rating - 1;
+          let newRating = parseInt(req.body.rating) - 1;
           const newFavouritePlaylist = user.favouritePlaylists;
           newFavouritePlaylist.splice(user.favouritePlaylists.indexOf(req.body.playlistId), 1);
           User.findOneAndUpdate(
