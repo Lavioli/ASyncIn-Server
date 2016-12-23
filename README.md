@@ -1,4 +1,4 @@
-#ASYNCIN SEARCH API
+#SYNC-IN SEARCH API
 ######ASyncIn is a simple music/video compiler to customize your playlist using platforms such as YouTube, SoundCloud, and Vimeo. 
 
 Users can be fetched, created, and updated. 
