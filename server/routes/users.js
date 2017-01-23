@@ -68,7 +68,7 @@ usersRouter
       
       if(req.body.newPassword && req.body.currentPassword) {
         User.findOne({ accessToken: req.query.access_token },
-          function(err, user){ 
+          (err, user) => { 
             bcrypt.compare(req.body.currentPassword, user.password, (err, isValid) => {
               
             if (!isValid) return res.json({message: 'Incorrect password'});
