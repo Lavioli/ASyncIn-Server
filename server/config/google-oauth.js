@@ -7,18 +7,17 @@ import {Strategy as GoogleStrategy} from 'passport-google-oauth20';
 import {Strategy as BearerStrategy} from 'passport-http-bearer';
 const googleRouter = express.Router();
 
-
 googleRouter.use(passport.initialize());
 googleRouter.use(passport.session());
 
 // used to serialize the user for the session
-passport.serializeUser(function(user, done) {
+passport.serializeUser((user, done) => {
     done(null, user.id);
 });
 
 // used to deserialize the user
-passport.deserializeUser(function(id, done) {
-    User.findById(id, function(err, user) {
+passport.deserializeUser((id, done) =>  {
+    User.findById(id, (err, user) =>  {
         done(err, user);
     });
 });
@@ -30,18 +29,17 @@ passport.use(new GoogleStrategy({
         passReqToCallback: true
     },
 
-    function(request, accessToken, refreshToken, profile, done) {
+    (request, accessToken, refreshToken, profile, done) => {
         User.findOne({
             token: profile.id
-        }, function(err, user) {
+        }, (err, user) => {
            
             if (err) {
                 done(err);
             }
             if (user) {
                 user.accessToken = accessToken;
-                
-                user.save(function(err){
+                user.save((err) => {
                     return done(err, user);
                 });
             }
@@ -52,7 +50,7 @@ passport.use(new GoogleStrategy({
                     token: profile.id
                 });
                 
-                newUser.save(function(err, res) {
+                newUser.save((err, res) => {
                     if (err) return done(err, res);
                     return done(null, newUser);
                 });
@@ -66,7 +64,7 @@ passport.use(new GoogleStrategy({
 googleRouter.get('/', passport.authenticate('google', {scope: ['https://www.googleapis.com/auth/userinfo.profile','https://www.googleapis.com/auth/userinfo.email'], session: false}));
 
 googleRouter.get('/callback', passport.authenticate('google', {failureRedirect: '/login', session: false}),
-	function(req, res) {
+	(req, res) => {
 		//successful authentication, redirect home
 		let accessToken = req.user.accessToken,
 		    token = req.user.token,
@@ -79,11 +77,11 @@ googleRouter.get('/callback', passport.authenticate('google', {failureRedirect: 
 //token auth setup
 passport.use(
     new BearerStrategy(
-        function(token, done) {
+        (token, done) => {
             User.findOne({
                     accessToken: token
                 },
-                function(err, user) {
+                (err, user) => {
                     if (err) {
                         return done(err)
                     }

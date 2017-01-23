@@ -20,17 +20,17 @@ passport.use(
         callbackURL: process.env.FACEBOOK_CLIENT_CALLBACK_URL
         },
         
-        function(accessToken, refreshToken, profile, done) {
+        (accessToken, refreshToken, profile, done) => {
             User.findOne({
             token: profile.id
-        }, function(err, user) {
+        }, (err, user) => {
            
             if (err) {
                 done(err);
             }
             if (user) {
                 user.accessToken = accessToken;
-                user.save(function(err){
+                user.save((err) => {
                     return done(err, user);
                 })
             }
@@ -40,7 +40,7 @@ passport.use(
                     accessToken: accessToken,
                     token: profile.id
                 });
-                newUser.save(function(err, res) {
+                newUser.save((err, res) => {
                     if (err) return done(err, res);
                     return done(null, newUser);
                 });
@@ -57,7 +57,7 @@ facebookRouter.get(
 
 facebookRouter.get('/callback',
   passport.authenticate('facebook', { session: false, failureRedirect: "/login" }),
-  function(req, res) {
+  (req, res) => {
     let accessToken = req.user.accessToken,
         token = req.user.token,
         redirectLink = 'https://kevl927.github.io/ASyncIn-Client/#/dashboard?access_token=' + accessToken + '&token=' + token;
@@ -67,11 +67,11 @@ facebookRouter.get('/callback',
 
 passport.use(
     new BearerStrategy(
-        function(token, done) {
+        (token, done) => {
             User.findOne({
                     accessToken: token
                 },
-                function(err, user) {
+                (err, user) => {
                     if (err) {
                         return done(err)
                     }
