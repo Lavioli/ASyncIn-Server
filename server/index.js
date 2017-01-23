@@ -39,7 +39,7 @@ app.use('/api/search', searchRouter);
 
 const CUSTOM_PORT = isNaN(Number(process.argv[2])) ? null : Number(process.argv[2]);
 
-const runServer = function (callback) {
+const runServer =  (callback) => {
   const databaseUri = process.env.DATABASE_URI || global.databaseUri || 'mongodb://localhost/asyncin';
   mongoose.connect(databaseUri).then(() => {
     const port = process.env.PORT || 8080;
@@ -53,7 +53,7 @@ const runServer = function (callback) {
 };
 
 if (require.main === module) {
-  runServer(function () {
+  runServer(() => {
     console.log("server started");
   });
 }
