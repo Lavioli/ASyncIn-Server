@@ -40,7 +40,7 @@ const UserSchema = new mongoose.Schema({
   queue: [trackSchema]
 });
 
-UserSchema.statics.createUser = function(username, password, token, accessToken, id) {
+UserSchema.statics.createUser = (username, password, token, accessToken, id) => {
   const newUser = { username:username, token:token, accessToken:accessToken, currentPlayingIndexInQueue: 0 };
   if (id) newUser._id = id;
 
@@ -71,7 +71,7 @@ UserSchema.statics.createUser = function(username, password, token, accessToken,
   });
 };
 
-UserSchema.statics.findOneAndValidate = function(token, password) {
+UserSchema.statics.findOneAndValidate = (token, password) => {
   return new Promise((res, rej) => {
     this.findOne({ token })
       .then(user => {
