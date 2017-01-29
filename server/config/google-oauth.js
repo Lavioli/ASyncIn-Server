@@ -68,7 +68,7 @@ googleRouter.get('/callback', passport.authenticate('google', {failureRedirect: 
 		//successful authentication, redirect home
 		let accessToken = req.user.accessToken,
 		    token = req.user.token,
-		    redirectLink = 'https://kevl927.github.io/ASyncIn-Client/#/dashboard?access_token=' + accessToken + '&token=' + token;
+		    redirectLink = process.env.DASHBOARD_REDIRECT_LINK + accessToken + '&token=' + token;
 		res.redirect(redirectLink);
 	}
 );
