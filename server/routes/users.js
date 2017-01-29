@@ -21,6 +21,7 @@ usersRouter
     if (!req.body.username || !req.body.password || !req.body.email) {
         return res.status(400).json({ message: 'Invalid input.' });
     }
+    
     User.createUser(
       req.body.username,
       req.body.password,
@@ -36,7 +37,7 @@ usersRouter
                  userId: user._id,
                  queue: user.queue,
                  favouritePlaylists: favouritePlaylist}, playlist: []});
-             })
+             });
     })
     .catch(err => {
         console.error(err);
@@ -60,7 +61,6 @@ usersRouter
             )
             .then(user => {
                 if (!user) return res.status(404).json({message: 'User not found.'});
-                     console.log('inside playlist user');
                      return res.status(200).json({ username: user.username })
             })
             }
