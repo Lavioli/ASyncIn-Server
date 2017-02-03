@@ -7,10 +7,20 @@ import User from '../models/user';
 import Playlist from '../models/playlist';
 const usersRouter = express.Router();
 
+const userPlaylistReturn = (user, favouritePlaylist) => {
+  return {
+    username:user.username, 
+    token: user.token, 
+    accessToken: user.accessToken, 
+    userId: user._id,
+    queue: user.queue,
+    favouritePlaylists: favouritePlaylist
+  }
+}
 
 usersRouter
   .route('/')
-  .get(passport.authenticate('bearer', {session: false}), (req, res) => {
+  .get(passport.authenticate('bearer', { session: false }), (req, res) => {
     User.find({},'username accessToken token _id favouritePlaylists queue')
       .then(users => {
             return res.json(users);
@@ -21,7 +31,6 @@ usersRouter
     if (!req.body.username || !req.body.password || !req.body.email) {
         return res.status(400).json({ message: 'Invalid input.' });
     }
-    
     User.createUser(
       req.body.username,
       req.body.password,
@@ -30,17 +39,13 @@ usersRouter
     )
     .then(user => {
         res.set('Location', `/api/v1/users/${user.username}`);
-        Playlist.find({ _id: { $in: user.favouritePlaylists }}).then(favouritePlaylist =>{ 
-             return res.status(201).json({user:{ username:user.username, 
-                 token: user.token, 
-                 accessToken: user.accessToken, 
-                 userId: user._id,
-                 queue: user.queue,
-                 favouritePlaylists: favouritePlaylist}, playlist: []});
+        Playlist.find({ _id: { $in: user.favouritePlaylists }}).then(favouritePlaylist => { 
+             return res.status(201).json({
+              user: userPlaylistReturn(user, favouritePlaylist), 
+              playlist: []});
              });
     })
     .catch(err => {
-        console.error(err);
         if (err.status === 400) return res.status(400).json({ message: err.message });
         return res.sendStatus(500);
     });
@@ -60,7 +65,7 @@ usersRouter
               { new: true }
             )
             .then(user => {
-                if (!user) return res.status(404).json({message: 'User not found.'});
+                if (!user) return res.status(404).json({ message: 'User not found.' });
                      return res.status(200).json({ username: user.username })
             })
             }
@@ -71,19 +76,19 @@ usersRouter
           (err, user) => { 
             bcrypt.compare(req.body.currentPassword, user.password, (err, isValid) => {
               
-            if (!isValid) return res.json({message: 'Incorrect password'});
+            if (!isValid) return res.json({ message: 'Incorrect password' });
             if (isValid){
             bcrypt.genSalt(10, (err, salt) => {
               bcrypt.hash(req.body.newPassword, salt, 
                 (err, hashNewPassword) => {
                   User.findOneAndUpdate(
-                    {accessToken: req.query.access_token}, 
-                    {password: hashNewPassword }, 
-                    {new: true}
+                    { accessToken: req.query.access_token }, 
+                    { password: hashNewPassword }, 
+                    { new: true }
                   )
                   .then(user => {
                     if (!user) return res.status(404).json({ message: 'User not found.' });
-                      return res.json({message: 'Your password has been changed successfully.'});
+                      return res.json({ message: 'Your password has been changed successfully.' });
                   })
                 }
               );
@@ -111,14 +116,7 @@ usersRouter
               Playlist.find({ _id: { $in: user.favouritePlaylists }})
               .then(favouritePlaylist =>{
                  return res.json({
-                    user:{ 
-                    username:user.username, 
-                    token: user.token, 
-                    accessToken: user.accessToken, 
-                    userId: user._id,                 
-                    queue: user.queue,
-                    favouritePlaylists: favouritePlaylist
-                    }, 
+                    user: userPlaylistReturn(user, favouritePlaylist), 
                     playlist: playlist});
              })
           });
@@ -166,17 +164,10 @@ usersRouter
             .sort({createdDate: 'desc'})
             .then(playlist => {
               Playlist.find({ _id: { $in: user.favouritePlaylists }})
-              .then(favouritePlaylist =>{ 
-                         return res.json({
-                           user:{ 
-                             username:user.username, 
-                             token: user.token, 
-                             accessToken: user.accessToken, 
-                             userId: user._id,
-                             queue: user.queue,
-                             favouritePlaylists: favouritePlaylist
-                           }
-                         });
+              .then(favouritePlaylist => { 
+                return res.json({
+                 user: userPlaylistReturn(user, favouritePlaylist)
+                });
               });
             });
           });
@@ -197,17 +188,11 @@ usersRouter
             )
             .sort({createdDate: 'desc'})
             .then(playlist => {
-                Playlist.find({ _id: { $in: user.favouritePlaylists }}).then(favouritePlaylist =>{ 
-                         return res.json({
-                           user:{ 
-                           username:user.username, 
-                           token: user.token, 
-                           accessToken: user.accessToken, 
-                           userId: user._id,
-                           queue: user.queue,
-                           favouritePlaylists: favouritePlaylist}
-                         });
-                      })
+                Playlist.find({ _id: { $in: user.favouritePlaylists }}).then(favouritePlaylist => { 
+                  return res.json({
+                   user: userPlaylistReturn(user, favouritePlaylist)                  
+                  });
+                });  
             });
           });
         }
@@ -217,8 +202,7 @@ usersRouter
 
 usersRouter
   .route('/login_success/:token')
-  
- .get(passport.authenticate('bearer', { session: false }), (req, res) => {
+  .get(passport.authenticate('bearer', { session: false }), (req, res) => {
     User.findOne(
       { token: req.params.token }
     )
@@ -229,19 +213,10 @@ usersRouter
       .sort({createdDate: 'desc'})
       .then(playlist => {
        Playlist.find({ _id: { $in: user.favouritePlaylists }}).then(favouritePlaylist =>{ 
-                         return res.json(
-                          {
-                            user:
-                            { 
-                              username:user.username, 
-                              token: user.token, 
-                              accessToken: user.accessToken, 
-                              userId: user._id,
-                              queue: user.queue,
-                              favouritePlaylists: favouritePlaylist,
-                            }, 
-                            playlist: playlist
-                          });
+        return res.json({
+          user: userPlaylistReturn(user, favouritePlaylist), 
+          playlist: playlist
+        });
                       })
       })
     })
@@ -257,23 +232,23 @@ usersRouter
       { new: true }
     )
     .then(user => {
-        return res.json
-                      ({
-                      access_token: user.accessToken,
-                      token: user.token
-                      });
+        return res.json(
+          {
+            access_token: user.accessToken,
+            token: user.token
+          }
+        );
     })
     .catch(err => res.sendStatus(500));
   });
   
-  
-  usersRouter
+usersRouter
   .route('/queue/:token')
   .put(passport.authenticate('bearer', { session: false }), (req, res) => {
     User.findOneAndUpdate(
       { token: req.params.token },
       { queue: req.body.queue },
-      {new:true}
+      { new:true }
     )
     .then(user => {
         return res.json(user.queue);
@@ -304,6 +279,5 @@ passport.use(
     }
   )
 );
-
 
 export default usersRouter;

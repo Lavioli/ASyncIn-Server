@@ -7,9 +7,9 @@ const playlistsRouter = express.Router();
 
 playlistsRouter
   .route('/')
-//GET top playlists in des order by rating
+//GET top playlists in descending order by rating
   .get(
-    passport.authenticate('bearer', {session: false}), 
+    passport.authenticate('bearer', { session: false }), 
     (req, res) => {
       Playlist.find(
         {
@@ -76,7 +76,7 @@ playlistsRouter
           )
           .sort({createdDate: 'desc'})
           .then(playlists => {
-            for(var i=0; i<playlists.length ; i++) {
+            for(let i = 0; i < playlists.length; i++) {
               if(playlists[i].name === req.body.name) {
                 return res.status(400).json({message: "This playlist name already exists"});
               }
@@ -149,9 +149,7 @@ playlistsRouter
       )
       .then(playlist => {
         if (!playlist) {
-          return res.status(404).json({
-            message: 'Playlist not found'
-          });
+          return res.status(404).json({message: 'Playlist not found'});
         }
         if (playlist.userId.toString() === req.params.userId.toString()) {
           Playlist.findByIdAndRemove(
@@ -159,7 +157,9 @@ playlistsRouter
           )
           .then(playlist => {
             Playlist.find(
-              {userId: req.params.userId}
+              {
+                userId: req.params.userId
+              }
             )
             .sort({createdDate: 'desc'})
             .then(playlist => {
@@ -224,6 +224,4 @@ playlistsRouter
     }
   )
   
-
-
 export default playlistsRouter;
