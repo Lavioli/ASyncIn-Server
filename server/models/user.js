@@ -6,7 +6,6 @@ const trackSchema = {
   link: String,
   source: String,
   thumbnail: String,
-  
 }
 
 const UserSchema = new mongoose.Schema({
@@ -90,6 +89,6 @@ UserSchema.statics.findOneAndValidate = function(token, password) {
   });
 };
 
-var User = mongoose.model('User', UserSchema);
 
-export default User;
+
+export default mongoose.model('User', UserSchema);
