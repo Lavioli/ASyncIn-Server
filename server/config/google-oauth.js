@@ -1,10 +1,8 @@
-import 'babel-polyfill';
 import express from 'express';
 import passport from 'passport';
 import User from '../models/user';
-
-import {Strategy as GoogleStrategy} from 'passport-google-oauth20';
-import {Strategy as BearerStrategy} from 'passport-http-bearer';
+import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
+import { Strategy as BearerStrategy } from 'passport-http-bearer';
 const googleRouter = express.Router();
 
 googleRouter.use(passport.initialize());
@@ -72,7 +70,6 @@ googleRouter.get('/callback', passport.authenticate('google', {failureRedirect: 
 		res.redirect(redirectLink);
 	}
 );
-
 
 //token auth setup
 passport.use(
