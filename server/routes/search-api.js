@@ -35,7 +35,7 @@ searchRouter
 			axios.get('https://api.vimeo.com/videos?' + vimeoData)
 			
 		]).then(axios.spread((youtube, soundcloud, vimeo) => {
-			soundcloud.data.forEach((element) => {
+			soundcloud.data.forEach(element => {
         		allResults.soundcloud.push(
         			{
         				link: element.permalink_url,
@@ -45,7 +45,7 @@ searchRouter
         			}
         		);
         	});
-    		vimeo.data.data.forEach((element) => {
+    		vimeo.data.data.forEach(element => {
     			let thumbnail;
     			if(element.pictures) thumbnail = element.pictures.sizes[element.pictures.sizes.length - 1].link;
 				allResults.vimeo.push(
@@ -57,7 +57,7 @@ searchRouter
 					}
 				);
 			});
-			youtube.data.items.forEach((element) => {
+			youtube.data.items.forEach(element => {
 				allResults.youtube.push(
 					{
 						link: 'https://www.youtube.com/watch?v=' + element.id.videoId,
@@ -70,7 +70,7 @@ searchRouter
         	res.json(allResults);
 		})).catch(err => {
           return res.json(err);
-		})
+		});
 	});
 
 export default searchRouter;

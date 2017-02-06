@@ -92,6 +92,7 @@ usersRouter
         });
       });
       }
+      
       if((!req.body.currentUsername && !req.body.newUsername && !req.body.currentPassword && !req.body.newPassword) || (req.body.currentUsername && !req.body.newUsername) || (!req.body.currentUsername && req.body.newUsername) || (req.body.currentPassword && !req.body.newPassword) || (!req.body.currentPassword && req.body.newPassword)) {
         return res.status(404).json({ message: 'Invalid input' });
       }
@@ -207,7 +208,7 @@ usersRouter
                            queue: user.queue,
                            favouritePlaylists: favouritePlaylist}
                          });
-                      })
+                });
             });
           });
         }
@@ -217,8 +218,7 @@ usersRouter
 
 usersRouter
   .route('/login_success/:token')
-  
- .get(passport.authenticate('bearer', { session: false }), (req, res) => {
+  .get(passport.authenticate('bearer', { session: false }), (req, res) => {
     User.findOne(
       { token: req.params.token }
     )
@@ -242,8 +242,8 @@ usersRouter
                             }, 
                             playlist: playlist
                           });
-                      })
-      })
+                      });
+      });
     })
     .catch(err => res.sendStatus(500));
   });
@@ -266,7 +266,6 @@ usersRouter
     .catch(err => res.sendStatus(500));
   });
   
-  
   usersRouter
   .route('/queue/:token')
   .put(passport.authenticate('bearer', { session: false }), (req, res) => {
@@ -281,7 +280,6 @@ usersRouter
     .catch(err => res.sendStatus(500));
   });
   
-
 passport.use(
   new BearerStrategy(
     (accessToken, done) => {
@@ -304,6 +302,5 @@ passport.use(
     }
   )
 );
-
 
 export default usersRouter;

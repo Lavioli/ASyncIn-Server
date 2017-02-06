@@ -1,5 +1,4 @@
-
-exports.validateUser = (body) => {
+exports.validateUser = body => {
   if (!body.username) {
     return {
       error: true,

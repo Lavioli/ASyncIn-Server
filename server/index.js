@@ -1,5 +1,5 @@
-import 'babel-polyfill';
 import express from 'express';
+const app = express();
 import bodyParser from 'body-parser';
 const jsonParser = bodyParser.json();
 import mongoose from 'mongoose';
@@ -14,14 +14,11 @@ if (process.env.NODE_ENV === 'development') {
 
 mongoose.Promise = global.Promise;
 
-
 import usersRouter from './routes/users';
 import playlistsRouter from './routes/playlists';
 import googleRouter from './config/google-oauth';
 import facebookRouter from './config/facebook-oauth';
 import searchRouter from './routes/search-api';
-
-const app = express();
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -39,7 +36,7 @@ app.use('/api/search', searchRouter);
 
 const CUSTOM_PORT = isNaN(Number(process.argv[2])) ? null : Number(process.argv[2]);
 
-const runServer =  (callback) => {
+const runServer =  callback => {
   const databaseUri = process.env.DATABASE_URI || global.databaseUri || 'mongodb://localhost/asyncin';
   mongoose.connect(databaseUri).then(() => {
     const port = process.env.PORT || 8080;

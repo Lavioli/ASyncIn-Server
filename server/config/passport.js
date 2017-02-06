@@ -13,4 +13,5 @@ passport.use(new BasicStrategy((token, password, cb) => {
 
     .catch(err => cb(err));
 }));
+
 export default passport;

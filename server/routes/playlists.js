@@ -1,9 +1,9 @@
 import express from 'express';
+const playlistsRouter = express.Router();
+
 import passport from '../config/passport';
 import User from '../models/user';
 import Playlist from '../models/playlist';
-const playlistsRouter = express.Router();
-
 
 playlistsRouter
   .route('/')
@@ -19,7 +19,7 @@ playlistsRouter
         [['rating','desc']]
       )
       .then(playlist => {
-        return res.json(playlist)
+        return res.json(playlist);
       })
       .catch(err => res.sendStatus(500));
     }
@@ -52,11 +52,11 @@ playlistsRouter
         }
       )
       .then(playlist => {
-       return res.json(playlist)
+       return res.json(playlist);
       })
       .catch(err => res.sendStatus(500));
     }
-  )
+  );
 
 playlistsRouter
   .route('/:userId')
@@ -96,7 +96,6 @@ playlistsRouter
     }
   );
  
-  
 playlistsRouter
   .route('/:userId/:playlistId')
   .put(
@@ -138,7 +137,6 @@ playlistsRouter
       });
     }
   )
-  
   .delete(
     passport.authenticate('bearer', {session: false}), 
     (req, res) => {
@@ -216,14 +214,12 @@ playlistsRouter
                 return res.json(playlist);
               });
             });
-          })
+          });
         } else {
             return res.status(400).json({message:'You\'re not authorized to modify this playlist'});
         }
       });
     }
-  )
+  );
   
-
-
 export default playlistsRouter;
