@@ -1,11 +1,10 @@
-import 'babel-polyfill';
 import express from 'express';
 import passport from 'passport';
-import User from '../models/user';
-
 import {Strategy as GoogleStrategy} from 'passport-google-oauth20';
 import {Strategy as BearerStrategy} from 'passport-http-bearer';
 const googleRouter = express.Router();
+
+import User from '../models/user';
 
 googleRouter.use(passport.initialize());
 googleRouter.use(passport.session());

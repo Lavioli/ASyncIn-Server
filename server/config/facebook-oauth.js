@@ -1,17 +1,13 @@
-import 'babel-polyfill';
 import express from 'express';
 import passport from 'passport';
-import User from '../models/user';
-
 import {Strategy as FacebookStrategy} from 'passport-facebook';
 import {Strategy as BearerStrategy} from 'passport-http-bearer';
 const facebookRouter = express.Router();
 
-
+import User from '../models/user';
 
 facebookRouter.use(passport.initialize());
 facebookRouter.use(passport.session());
-
 
 passport.use(
     new FacebookStrategy({

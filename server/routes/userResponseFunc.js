@@ -1,4 +1,4 @@
-export default (user) => {
+export default user => {
   return {
       username: user.username,
       token: user.token,
